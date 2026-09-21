@@ -28,6 +28,11 @@
     .marquee { animation: marquee 22s linear infinite; } @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(50%)} }
     .tilt { transform: rotate(-2deg); } .tilt2 { transform: rotate(2.5deg); }
     .pill { border:1px solid rgba(17,22,31,.14); border-radius:999px; padding:.45rem .8rem; font-size:.78rem; font-weight:700; }
+    .menu-panel { opacity:0; visibility:hidden; transform:translateY(-18px) scale(.985); transition:opacity .35s ease, transform .45s cubic-bezier(.22,1,.36,1), visibility .35s; }
+    .menu-panel.open { opacity:1; visibility:visible; transform:none; }
+    .menu-card { transform:translateY(18px); opacity:0; transition:transform .45s cubic-bezier(.22,1,.36,1), opacity .35s ease; }
+    .menu-panel.open .menu-card { transform:none; opacity:1; }
+    .menu-panel.open .menu-card:nth-child(2){transition-delay:.05s}.menu-panel.open .menu-card:nth-child(3){transition-delay:.1s}.menu-panel.open .menu-card:nth-child(4){transition-delay:.15s}
   </style>
 </head>
 <body>
@@ -35,10 +40,24 @@
   <header class="fixed top-0 inset-x-0 z-50 px-4 md:px-8 py-4">
     <nav class="max-w-7xl mx-auto flex items-center justify-between bg-white/85 backdrop-blur-xl border border-black/10 rounded-2xl px-4 md:px-6 py-3 shadow-sm">
       <a href="#top" class="flex items-center gap-2 font-black text-lg tracking-tight"><img src="/assets/brand/kg-user-black.png" alt="K G Neural Tech" class="w-11 h-11 rounded-xl bg-black p-1 object-contain shadow-sm" />KeenGuild</a>
-      <div class="hidden md:flex items-center gap-7 text-sm font-bold"><a href="#services" class="hover:text-lime-700">الخدمات</a><a href="#demos" class="hover:text-lime-700">التجارب</a><a href="#work" class="hover:text-lime-700">أعمالنا</a><a href="#journal" class="hover:text-lime-700">المدونة</a></div>
-      <a href="#contact" class="bg-ink text-white rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-lime hover:text-ink transition">ابدأ مشروعك ↗</a>
+      <div class="flex items-center gap-3"><button id="menuButton" onclick="toggleMenu()" aria-expanded="false" class="bg-ink text-white rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-lime hover:text-ink transition flex items-center gap-2"><span id="menuLabel">استكشف</span><span id="menuIcon" class="text-lg leading-none">＋</span></button><a href="#contact" class="hidden sm:inline-flex bg-lime text-ink rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-ink hover:text-white transition">ابدأ مشروعك ↗</a></div>
     </nav>
   </header>
+
+  <div id="menuPanel" class="menu-panel fixed inset-0 z-40 bg-ink text-white pt-28 pb-8 px-5 md:px-10 overflow-y-auto">
+    <div class="max-w-7xl mx-auto min-h-full flex flex-col justify-between">
+      <div class="grid lg:grid-cols-[.8fr_1.2fr] gap-10 items-start">
+        <div class="pt-5"><span class="text-sm font-bold text-lime">خريطة KeenGuild</span><h2 class="text-4xl md:text-6xl font-bold leading-tight mt-5">كل ما تحتاجه<br><span class="text-white/45">في مكان واحد.</span></h2><p class="text-white/60 text-lg leading-8 mt-6 max-w-sm">من أول شرارة إلى منتج يعمل ويكبر. اختر المسار الذي تريد استكشافه.</p><a href="#contact" onclick="closeMenu()" class="inline-flex mt-8 bg-lime text-ink rounded-xl px-5 py-3 font-bold">لنتحدث عن فكرتك ↗</a></div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <a href="#services" onclick="closeMenu()" class="menu-card rounded-3xl bg-white/8 border border-white/10 p-6 hover:bg-white/15 transition group"><div class="w-12 h-12 rounded-2xl bg-lime text-ink grid place-items-center text-2xl mb-12">✦</div><div class="text-xs text-white/45">01 / BUILD</div><h3 class="text-2xl font-bold mt-2">الخدمات</h3><p class="text-white/55 mt-2 leading-7">استراتيجية، تصميم، وتطوير ينقل الفكرة إلى الواقع.</p><span class="block mt-6 text-lime group-hover:translate-x-[-5px] transition">استكشف المسار ←</span></a>
+          <a href="#demos" onclick="closeMenu()" class="menu-card rounded-3xl bg-white/8 border border-white/10 p-6 hover:bg-white/15 transition group"><div class="w-12 h-12 rounded-2xl bg-[#087eff] text-white grid place-items-center text-2xl mb-12">◈</div><div class="text-xs text-white/45">02 / TRY</div><h3 class="text-2xl font-bold mt-2">التجارب</h3><p class="text-white/55 mt-2 leading-7">نماذج حية تساعدك ترى الفكرة قبل أن تستثمر فيها.</p><span class="block mt-6 text-lime group-hover:translate-x-[-5px] transition">جرّب الآن ←</span></a>
+          <a href="#work" onclick="closeMenu()" class="menu-card rounded-3xl bg-white/8 border border-white/10 p-6 hover:bg-white/15 transition group"><div class="w-12 h-12 rounded-2xl bg-[#d5ddff] text-ink grid place-items-center text-2xl mb-12">⌁</div><div class="text-xs text-white/45">03 / SHAPE</div><h3 class="text-2xl font-bold mt-2">أعمالنا</h3><p class="text-white/55 mt-2 leading-7">تصميمات ممكنة لمنتجات ومواقع تشبه طموحك.</p><span class="block mt-6 text-lime group-hover:translate-x-[-5px] transition">شاهد المختارات ←</span></a>
+          <a href="#journal" onclick="closeMenu()" class="menu-card rounded-3xl bg-white/8 border border-white/10 p-6 hover:bg-white/15 transition group"><div class="w-12 h-12 rounded-2xl bg-white text-ink grid place-items-center text-2xl mb-12">☷</div><div class="text-xs text-white/45">04 / THINK</div><h3 class="text-2xl font-bold mt-2">المدونة</h3><p class="text-white/55 mt-2 leading-7">أفكار عملية عن المنتجات، التجربة، والنمو الذكي.</p><span class="block mt-6 text-lime group-hover:translate-x-[-5px] transition">اقرأ الأفكار ←</span></a>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-14 pt-5 flex flex-wrap justify-between gap-4 text-sm text-white/45"><span>© 2026 KeenGuild</span><span>القاهرة · نعمل مع فرق طموحة</span></div>
+    </div>
+  </div>
 
   <main id="top">
     <section class="min-h-screen pt-32 pb-20 px-5 md:px-10 grid-bg relative overflow-hidden">
@@ -81,6 +100,9 @@
     function closeDemo(){ const m=document.getElementById('modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
     function showToast(){ const t=document.getElementById('toast'); t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),3000); }
     const glow = document.getElementById('cursorGlow'); window.addEventListener('pointermove', e => { glow.style.left=e.clientX+'px'; glow.style.top=e.clientY+'px'; });
+    function toggleMenu(){ const p=document.getElementById('menuPanel'), b=document.getElementById('menuButton'), l=document.getElementById('menuLabel'), i=document.getElementById('menuIcon'); const open=!p.classList.contains('open'); p.classList.toggle('open',open); b.setAttribute('aria-expanded',open); l.textContent=open?'إغلاق':'استكشف'; i.textContent=open?'×':'＋'; document.body.style.overflow=open?'hidden':''; }
+    function closeMenu(){ const p=document.getElementById('menuPanel'); if(p.classList.contains('open')) toggleMenu(); }
+    window.addEventListener('keydown', e => e.key==='Escape' && closeMenu());
   </script>
 </body>
 </html>
