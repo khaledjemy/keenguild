@@ -39,6 +39,7 @@
     #demos .bg-\[\#ffccb8\] { background:#f3ddd3; }
     #work { background:#f6f8f7; }
     @media (max-width: 640px) { h1 { font-size:2.7rem !important; } h2 { font-size:2.2rem !important; } }
+    @media (min-width: 768px) and (max-width: 1100px) { .device { width:300px !important; right:0 !important; } .hero-orb { top:42px !important; } }
     .menu-panel { opacity:0; visibility:hidden; transform:translateY(-18px) scale(.985); transition:opacity .35s ease, transform .45s cubic-bezier(.22,1,.36,1), visibility .35s; }
     .menu-panel.open { opacity:1; visibility:visible; transform:none; }
     .menu-card { transform:translateY(18px); opacity:0; transition:transform .45s cubic-bezier(.22,1,.36,1), opacity .35s ease; }
@@ -72,7 +73,7 @@
 
   <main id="top">
     <section class="min-h-screen pt-32 pb-20 px-5 md:px-10 grid-bg relative overflow-hidden">
-      <div class="max-w-7xl mx-auto grid lg:grid-cols-[1.05fr_.95fr] gap-12 items-center">
+      <div class="max-w-7xl mx-auto grid md:grid-cols-[1.05fr_.95fr] gap-8 lg:gap-12 items-center">
         <div class="reveal">
           <div class="inline-flex items-center gap-2 pill mb-7 bg-white"><span class="w-2 h-2 rounded-full bg-lime-600"></span>استوديو رقمي من القاهرة إلى العالم</div>
           <h1 class="text-4xl md:text-6xl xl:text-[76px] leading-[1.08] font-bold tracking-[-.045em] max-w-3xl">التميّز لا يُشرح.<br><span class="text-[#087eff]">يُلاحظ.</span></h1>
