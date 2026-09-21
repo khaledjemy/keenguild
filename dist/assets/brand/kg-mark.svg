@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="K G Neural Tech">
+  <rect width="64" height="64" rx="18" fill="#031427"/>
+  <path d="M16 14v36M16 32l18-18M16 32l20 20" fill="none" stroke="#F4F8FF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M49 22a15 15 0 1 0 0 20H38" fill="none" stroke="#12D9FF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M47 13v7M47 44v7" stroke="#12D9FF" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="47" cy="11" r="3" fill="#12D9FF"/><circle cx="47" cy="53" r="3" fill="#12D9FF"/>
+</svg>
