@@ -45,6 +45,15 @@
     .menu-card { transform:translateY(18px); opacity:0; transition:transform .45s cubic-bezier(.22,1,.36,1), opacity .35s ease; }
     .menu-panel.open .menu-card { transform:none; opacity:1; }
     .menu-panel.open .menu-card:nth-child(2){transition-delay:.05s}.menu-panel.open .menu-card:nth-child(3){transition-delay:.1s}.menu-panel.open .menu-card:nth-child(4){transition-delay:.15s}
+    .menu-panel { background:#ffffff !important; color:#10243a !important; }
+    .menu-panel .text-white\/45 { color:rgba(16,36,58,.48) !important; }
+    .menu-panel .text-white\/55 { color:rgba(16,36,58,.62) !important; }
+    .menu-panel .text-white\/60 { color:rgba(16,36,58,.68) !important; }
+    .menu-panel .border-white\/10 { border-color:#dbe8ee !important; }
+    .menu-panel .bg-white\/8 { background:#f5f9fa !important; }
+    .menu-panel .text-lime { color:#087eff !important; }
+    .menu-panel .bg-lime { background:#0b9bd7 !important; color:#fff !important; }
+    .menu-panel .bg-ink { background:#10243a !important; color:#fff !important; }
   </style>
 </head>
 <body>
@@ -52,7 +61,7 @@
   <header class="fixed top-0 inset-x-0 z-50 px-4 md:px-8 py-4">
     <nav class="max-w-7xl mx-auto flex items-center justify-between bg-white/85 backdrop-blur-xl border border-black/10 rounded-2xl px-4 md:px-6 py-3 shadow-sm">
       <a href="#top" class="flex items-center gap-2 font-black text-lg tracking-tight"><img src="/assets/brand/kg-user-black.png" alt="K G Neural Tech" class="w-11 h-11 rounded-xl bg-black p-1 object-contain shadow-sm" />KeenGuild</a>
-      <div class="flex items-center gap-3"><button id="menuButton" onclick="toggleMenu()" aria-expanded="false" class="bg-ink text-white rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-lime hover:text-ink transition flex items-center gap-2"><span id="menuLabel">استكشف</span><span id="menuIcon" class="text-lg leading-none">＋</span></button><a href="#contact" class="hidden sm:inline-flex bg-lime text-ink rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-ink hover:text-white transition">ابدأ مشروعك ↗</a></div>
+      <div class="flex items-center gap-3"><button id="menuButton" onclick="toggleMenu()" aria-expanded="false" class="bg-white text-ink border border-[#d6e6ec] rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-[#eef8fb] transition flex items-center gap-2"><span id="menuLabel">استكشف</span><span id="menuIcon" class="text-lg leading-none text-[#087eff]">＋</span></button><a href="#contact" class="hidden sm:inline-flex bg-[#0b9bd7] text-white rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-ink transition">ابدأ مشروعك ↗</a></div>
     </nav>
   </header>
 
