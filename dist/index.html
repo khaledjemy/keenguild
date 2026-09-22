@@ -2,10 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="KeenGuild — تصميم مواقع وحلول برمجية ومنتجات SaaS مصممة حول احتياجات عملك." />
   <title>KeenGuild — نبني المنتجات التي تكبر معك</title>
-  <link rel="icon" type="image/png" sizes="512x512" href="/assets/brand/kg-user-black.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/brand/favicon-new.png?v=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { theme: { extend: { colors: { ink: '#10243a', lime: '#12c4ea', mist: '#f1f5f5' }, fontFamily: { sans: ['IBM Plex Sans Arabic', 'Arial', 'sans-serif'] } } } }
@@ -13,9 +16,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { color-scheme: light; }
+    :root { color-scheme: light; --scroll-color:#12c4ea; --scroll-track:#dcecf2; }
     * { scroll-behavior: smooth; }
-    body { font-family: 'IBM Plex Sans Arabic', Arial, sans-serif; background:#f6f8f7; color:#10243a; }
+    html { scroll-snap-type: y mandatory; scroll-padding-top:0; scrollbar-width:thin; scrollbar-color:var(--scroll-color) var(--scroll-track); }
+    html::-webkit-scrollbar { width:11px; }
+    html::-webkit-scrollbar-track { background:var(--scroll-track); }
+    html::-webkit-scrollbar-thumb { background:var(--scroll-color); border:2px solid var(--scroll-track); border-radius:999px; }
+    body { font-family: 'IBM Plex Sans Arabic', Arial, sans-serif; background:#f6f8f7; color:#10243a; overflow-x:hidden; }
+    main > section { height:100dvh; min-height:100dvh; scroll-snap-align:start; scroll-snap-stop:always; display:flex; align-items:center; overflow:hidden; }
+    main > section > .max-w-7xl { width:100%; }
+    footer { scroll-snap-align:end; scroll-snap-stop:always; }
+    .page-progress { position:absolute; left:0; right:0; bottom:-1px; height:4px; z-index:70; background:rgba(8,126,255,.12); }
+    .page-progress-fill { height:100%; width:0%; background:#12c4ea; transition:width .55s cubic-bezier(.22,1,.36,1); box-shadow:0 0 14px rgba(18,196,234,.55); }
+    .page-progress-meta { position:fixed; left:18px; bottom:13px; z-index:69; font-size:11px; font-weight:700; letter-spacing:.08em; color:rgba(16,36,58,.55); direction:ltr; }
     .latin { font-family:'Space Grotesk', sans-serif; letter-spacing:-.04em; }
     .grid-bg { background-image: linear-gradient(rgba(16,36,58,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(16,36,58,.045) 1px, transparent 1px); background-size: 40px 40px; }
     .noise { position:relative; overflow:hidden; }
@@ -38,33 +51,447 @@
     #demos .bg-\[\#c9d2ff\] { background:#dce4fa; }
     #demos .bg-\[\#ffccb8\] { background:#f3ddd3; }
     #work { background:#f6f8f7; }
+    #services { padding-top:32px !important; padding-bottom:24px !important; background:radial-gradient(circle at 8% 78%,rgba(18,196,234,.12),transparent 28%),#fff !important; }
+    #services > .max-w-7xl { display:flex; flex-direction:column; justify-content:center; gap:26px; }
+    #services > .max-w-7xl > .flex { margin-bottom:0 !important; align-items:end; }
+    #services > .max-w-7xl > .flex h2 { margin-top:10px !important; }
+    #services > .max-w-7xl > .grid { gap:14px; }
+    #services article { min-height:270px !important; padding:24px !important; position:relative; overflow:hidden; border:1px solid rgba(16,36,58,.06); transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease; }
+    #services article:hover { transform:translateY(-8px); box-shadow:0 22px 42px rgba(16,36,58,.14); }
+    #services article:nth-child(2) { transform:translateY(14px); }
+    #services article:nth-child(2):hover { transform:translateY(6px); }
+    #services article:nth-child(3) { transform:translateY(28px); }
+    #services article:nth-child(3):hover { transform:translateY(20px); }
+    #services article:nth-child(4) { transform:translateY(42px); }
+    #services article:nth-child(4):hover { transform:translateY(34px); }
+    #services article:after { content:''; position:absolute; width:150px; height:150px; border-radius:50%; background:rgba(255,255,255,.12); left:-58px; bottom:-80px; pointer-events:none; }
+    #services article h3 { font-size:1.45rem; }
+    #services article p { font-size:.95rem; }
+    #services article:nth-child(1) { background:linear-gradient(145deg,#10243a 0%,#173a58 100%) !important; color:#fff; }
+    #services article:nth-child(2) { background:linear-gradient(145deg,#eef7f8 0%,#e4f0f5 100%) !important; color:#10243a; }
+    #services article:nth-child(3) { background:linear-gradient(145deg,#e5efff 0%,#d8e6fa 100%) !important; color:#10243a; }
+    #services article:nth-child(4) { background:linear-gradient(145deg,#12c4ea 0%,#079bc9 100%) !important; color:#10243a; }
+    #services article:nth-child(1) p { color:rgba(255,255,255,.68) !important; }
+    #services article > div:first-child { width:48px; height:48px; display:grid; place-items:center; border-radius:15px; background:rgba(255,255,255,.82); color:#12c4ea; }
+    #services article:nth-child(1) > div:first-child { background:rgba(255,255,255,.12); color:#12c4ea; }
+    #services article:nth-child(4) > div:first-child { background:rgba(255,255,255,.88); }
+    #services article:before { content:''; position:absolute; inset:0 0 auto; height:3px; background:#12c4ea; opacity:.7; }
+    #services article:nth-child(1):before { background:#12c4ea; }
+    #services article:nth-child(4):before { background:#fff; opacity:.75; }
     @media (max-width: 640px) { h1 { font-size:2.7rem !important; } h2 { font-size:2.2rem !important; } }
+    @media (max-width: 767px) { #services > .max-w-7xl > .flex { align-items:start; } #services article:nth-child(n) { transform:none; } #services article { min-height:220px !important; } }
     @media (min-width: 768px) and (max-width: 1100px) { .device { width:300px !important; right:0 !important; } .hero-orb { top:42px !important; } }
     .menu-panel { opacity:0; visibility:hidden; transform:translateY(-18px) scale(.985); transition:opacity .35s ease, transform .45s cubic-bezier(.22,1,.36,1), visibility .35s; }
     .menu-panel.open { opacity:1; visibility:visible; transform:none; }
     .menu-card { transform:translateY(18px); opacity:0; transition:transform .45s cubic-bezier(.22,1,.36,1), opacity .35s ease; }
     .menu-panel.open .menu-card { transform:none; opacity:1; }
     .menu-panel.open .menu-card:nth-child(2){transition-delay:.05s}.menu-panel.open .menu-card:nth-child(3){transition-delay:.1s}.menu-panel.open .menu-card:nth-child(4){transition-delay:.15s}
+    header.section-orbit nav, header.section-dark nav { background:rgba(7,17,27,.9) !important; color:#fff; border-color:rgba(255,255,255,.14) !important; box-shadow:0 8px 24px rgba(0,0,0,.18); }
+    header.section-dark nav { background:#102d49 !important; }
+    header.section-orbit nav { background:#07131f !important; }
+    header.section-orbit nav a, header.section-orbit nav button, header.section-dark nav a, header.section-dark nav button { color:#fff; }
+    header.section-orbit nav *, header.section-dark nav * { color:#fff !important; }
+    header.section-orbit nav .bg-white, header.section-orbit nav .bg-white\/90 { background:rgba(255,255,255,.08) !important; }
+    header.section-orbit #languageButton, header.section-orbit #menuButton, header.section-dark #languageButton, header.section-dark #menuButton { background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.22); }
+    header.section-orbit #navCta, header.section-dark #navCta { background:#12c4ea !important; color:#fff !important; }    header nav, header nav a, header nav button { transition:background-color .35s ease,color .35s ease,border-color .35s ease,box-shadow .35s ease; }
+    header nav { min-height:68px; }
+    .nav-link { position:relative; }
+    .nav-link:after { content:''; position:absolute; left:12px; right:12px; bottom:2px; height:2px; border-radius:999px; background:#12c4ea; transform:scaleX(0); transform-origin:center; transition:transform .25s ease; }
+    .nav-link:hover:after { transform:scaleX(1); }
+    #services > .max-w-7xl > .flex > div:first-child { position:relative; }
+    #services > .max-w-7xl > .flex > div:first-child:after { content:'BUILD / DESIGN / GROW'; display:inline-flex; margin-top:16px; padding:7px 11px; border:1px solid rgba(8,126,255,.18); border-radius:999px; color:#12c4ea; font-size:10px; font-weight:800; letter-spacing:.13em; direction:ltr; }
+    #services > .max-w-7xl > .flex > p { position:relative; padding:18px 20px; border-right:3px solid #12c4ea; background:rgba(234,246,250,.55); border-radius:14px; }
+    #services article { border-radius:22px !important; }
+    #services article:after { width:220px; height:220px; left:auto; right:-100px; bottom:-150px; background:rgba(255,255,255,.1); }
+    #services article:before { height:5px; }
+    #services article:where(:nth-child(1),:nth-child(2),:nth-child(3),:nth-child(4)) > div:first-child:after { content:'↗'; position:absolute; top:25px; left:25px; font-size:13px; font-weight:900; opacity:.55; }
+    #services article h3 { letter-spacing:-.04em; }
+    #services article p { max-width:230px; }
+    #services article:nth-child(1) h3:before { content:'01'; }
+    #services article:nth-child(2) h3:before { content:'02'; }
+    #services article:nth-child(3) h3:before { content:'03'; }
+    #services article:nth-child(4) h3:before { content:'04'; }
+    #services article h3:before { display:block; margin-bottom:14px; font-family:'Space Grotesk',sans-serif; font-size:.72rem; letter-spacing:.16em; opacity:.55; direction:ltr; }
+    .proof-section { padding:24px 0; }
+    #proof { position:relative; isolation:isolate; overflow:hidden; background:linear-gradient(135deg,#0c2137 0%,#102d49 58%,#0b1b2c 100%); }
+    #proof:before { content:''; position:absolute; width:520px; height:520px; left:-180px; top:-210px; border:1px solid rgba(18,196,234,.2); border-radius:50%; box-shadow:0 0 0 32px rgba(18,196,234,.035),0 0 0 64px rgba(18,196,234,.025); pointer-events:none; }
+    #proof:after { content:''; position:absolute; width:360px; height:360px; right:-120px; bottom:-180px; background:radial-gradient(circle,rgba(18,196,234,.18),transparent 68%); pointer-events:none; }
+    #proof > .max-w-7xl { position:relative; z-index:1; }
+    #proof h2 { font-size:clamp(3rem,6vw,5.8rem); line-height:.94; letter-spacing:-.06em; }
+    #proof .proof-intro { position:relative; padding-left:24px; }
+    #proof .proof-intro:before { content:''; position:absolute; left:0; top:5px; bottom:5px; width:3px; border-radius:9px; background:#12c4ea; }
+    #proof .proof-grid { box-shadow:0 20px 60px rgba(0,0,0,.18); }
+    .proof-card { min-height:180px; position:relative; overflow:hidden; background:rgba(8,26,44,.72); transition:background .3s ease, transform .3s ease, border-color .3s ease; }
+    .proof-card:before { content:''; position:absolute; right:24px; top:24px; width:54px; height:54px; border:1px solid rgba(18,196,234,.28); border-radius:50%; opacity:.7; }
+    .proof-card:after { content:'✦'; position:absolute; right:42px; top:37px; color:#12c4ea; font-size:18px; }
+    .proof-card:hover { background:#163b5b; transform:translateY(-7px); }
+    .proof-card h3 { font-size:clamp(1.2rem,1.8vw,1.55rem); }
+    .proof-card p { max-width:15rem; }
+    .proof-card .proof-meta { display:block; margin-top:28px; padding-top:14px; border-top:1px solid rgba(255,255,255,.12); color:rgba(255,255,255,.42); font-size:.72rem; letter-spacing:.08em; }
+    /* Global scale tuning: keep the composition spacious without oversized type or cards. */
+    body { font-size:15px; }
+    section > .max-w-7xl { max-width:1160px; }
+    #top h1 { font-size:clamp(3rem,5.9vw,5.6rem) !important; line-height:.96; }
+    #top .max-w-md, #services .max-w-md { font-size:1rem; line-height:1.8; }
+    #proof { padding-top:30px; padding-bottom:30px; }
+    #proof h2 { font-size:clamp(2.6rem,5vw,4.8rem); }
+    #proof .proof-intro { margin-bottom:28px; }
+    .proof-card { min-height:238px; padding:22px !important; }
+    .proof-card h3 { margin-top:42px; font-size:1.05rem; }
+    .proof-card p { margin-top:10px; font-size:.82rem; line-height:1.65; }
+    .proof-card:before { right:20px; top:20px; width:46px; height:46px; }
+    .proof-card:after { right:35px; top:31px; font-size:15px; }
+    .proof-card .proof-meta { margin-top:18px; padding-top:10px; font-size:.64rem; }
+    #orbit .orbit-stage { min-height:460px; }
+    #orbit .orbit-core { width:clamp(190px,24vw,280px); }
+    #services { padding-top:5rem !important; padding-bottom:5rem !important; }
+    #services article { min-height:250px !important; padding:1.35rem !important; }
+    #demos, #work, #journal, #contact { padding-top:5rem !important; padding-bottom:5rem !important; }
+    @media (max-width: 767px) {
+      body { font-size:14px; }
+      section > .max-w-7xl { max-width:100%; }
+      #top h1 { font-size:clamp(2.65rem,12vw,4rem) !important; }
+      #proof h2 { font-size:clamp(2.5rem,12vw,4rem); }
+      .proof-card { min-height:210px; }
+    }
+    #reel { position:relative; min-height:100dvh; overflow:hidden; background:#07131f; color:#fff; isolation:isolate; }
+    #reel .reel-backdrop { position:absolute; inset:0; z-index:-1; overflow:hidden; background:radial-gradient(circle at 50% 48%,rgba(18,196,234,.18),transparent 30%),linear-gradient(135deg,#07131f,#102b43 58%,#07131f); }
+    #reel .reel-grid { position:absolute; inset:-20%; opacity:.2; background-image:linear-gradient(rgba(18,196,234,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(18,196,234,.3) 1px,transparent 1px); background-size:70px 70px; transform:perspective(500px) rotateX(58deg) translateY(24%); animation:reelGrid 14s linear infinite; }
+    #reel .reel-orb { position:absolute; width:clamp(180px,25vw,360px); aspect-ratio:1; left:52%; top:50%; border:1px solid rgba(18,196,234,.65); border-radius:50%; box-shadow:0 0 80px rgba(18,196,234,.22),inset 0 0 40px rgba(18,196,234,.18); transform:translate(-50%,-50%) rotateX(66deg); animation:reelOrbit 9s linear infinite; }
+    #reel .reel-orb-two { width:clamp(260px,38vw,560px); border-color:rgba(255,255,255,.2); animation-duration:15s; animation-direction:reverse; }
+    #reel .reel-content { position:relative; z-index:2; min-height:inherit; display:flex; flex-direction:column; justify-content:center; max-width:1160px; margin:auto; }
+    #reel .reel-kicker { color:#12c4ea; font:700 .75rem/1 'Space Grotesk',sans-serif; letter-spacing:.18em; }
+    #reel h2 { margin-top:1.25rem; font-size:clamp(3rem,7vw,7rem); line-height:.9; letter-spacing:-.07em; }
+    #reel h2 span { color:#12c4ea; }
+    #reel p { max-width:28rem; margin-top:1.5rem; color:rgba(255,255,255,.62); font-size:1.05rem; line-height:1.8; }
+    #reel .reel-button { display:inline-flex; width:max-content; margin-top:2rem; padding:.9rem 1.25rem; border:1px solid rgba(18,196,234,.6); border-radius:999px; color:#fff; background:rgba(18,196,234,.12); transition:background .25s,transform .25s; }
+    #reel .reel-button:hover { background:#12c4ea; transform:translateY(-3px); }
+    #reel .reel-word { position:absolute; right:4%; bottom:7%; color:rgba(255,255,255,.35); font:700 .7rem/1 'Space Grotesk',sans-serif; letter-spacing:.24em; }
+    @keyframes reelGrid { to { transform:perspective(500px) rotateX(58deg) translateY(30%); } }
+    @keyframes reelOrbit { to { transform:translate(-50%,-50%) rotateX(66deg) rotateZ(360deg); } }
+    #orbit { background:#0b1118; color:#fff; position:relative; overflow:hidden; }
+    #orbit .orbit-stage { position:relative; min-height:calc(100vh - 68px); height:100%; display:grid; place-items:center; perspective:1000px; overflow:visible; }
+    #orbit { height:100dvh !important; min-height:100dvh !important; max-height:100dvh !important; box-sizing:border-box; }
+    #orbit .orbit-stage { min-height:0; height:100%; max-height:100%; }
+    #orbit .orbit-caption { bottom:2.5%; margin-top:1.5rem; font:600 .9rem/1.2 "Space Grotesk",sans-serif; letter-spacing:.12em; text-transform:uppercase; word-spacing:.2em; text-shadow:0 0 18px rgba(18,196,234,.25); }
+    #orbit .orbit-keywords { bottom:11%; }
+    #orbit .orbit-word { position:absolute; white-space:nowrap; font-family:'Space Grotesk',sans-serif; font-size:clamp(4rem,10vw,10rem); line-height:.8; letter-spacing:-.08em; font-weight:600; color:rgba(255,255,255,.9); will-change:transform,opacity; pointer-events:none; transition:transform .8s cubic-bezier(.22,1,.36,1), opacity .8s ease; }
+    #orbit .orbit-word.left { right:50%; transform:translateX(-8vw); }
+    #orbit .orbit-word.right { left:50%; transform:translateX(8vw); }
+    #orbit .orbit-word.right { color:#12c4ea; text-shadow:0 0 22px rgba(18,196,234,.22); }
+    #proof > .max-w-7xl { padding-top:.5rem; padding-bottom:.5rem; }
+    #proof h2 { font-size:clamp(2.5rem,5vw,4.4rem) !important; }
+    #proof .proof-intro { margin-bottom:clamp(1rem,2.5vh,1.75rem); }
+    #proof .proof-card { min-height:180px; padding:1.15rem !important; }
+    #proof .proof-card h3 { margin-top:2.5rem; }
+
+    /* Keep the proof section fully visible across desktop viewport heights. */
+    #proof > .max-w-7xl { padding-top:clamp(.75rem,2vh,1.5rem) !important; padding-bottom:.75rem !important; }
+    #proof .proof-intro { margin-bottom:clamp(.65rem,1.5vh,1rem) !important; }
+    #proof h2 { font-size:clamp(2.2rem,4.2vw,3.7rem) !important; line-height:.92 !important; }
+    #proof .proof-card { min-height:clamp(180px,27vh,230px) !important; padding:1.15rem !important; }
+    #proof .proof-card h3 { margin-top:2rem !important; font-size:1rem !important; }
+    #proof .proof-card p { margin-top:.5rem !important; line-height:1.45 !important; }
+    #proof .proof-card .proof-meta { margin-top:1rem !important; padding-top:.65rem !important; }
+    #proof .proof-grid { align-items:start !important; grid-auto-rows:180px !important; height:180px !important; max-height:180px !important; overflow:hidden !important; background:transparent !important; }
+    #proof .proof-card { height:180px !important; min-height:0 !important; align-self:start !important; }
+    main > section#proof { height:auto !important; min-height:0 !important; display:block !important; align-items:initial !important; }
+    main > section#proof {
+      height:100dvh !important;
+      min-height:100dvh !important;
+      max-height:100dvh !important;
+      display:flex !important;
+      align-items:center !important;
+      box-sizing:border-box !important;
+    }
+    @media (min-width: 768px) {
+      #proof { min-height:0 !important; height:auto !important; }
+      #proof > .max-w-7xl { padding-top:.5rem !important; padding-bottom:.5rem !important; }
+      #proof .proof-intro { margin-bottom:.55rem !important; }
+      #proof .proof-card { min-height:clamp(155px,22vh,190px) !important; }
+    }
+    #orbit .orbit-core { position:relative; z-index:2; width:clamp(220px,28vw,330px); aspect-ratio:1; display:grid; place-items:center; transform-style:preserve-3d; animation:none; }
+    #orbit .orbit-core:before, #orbit .orbit-core:after { content:''; position:absolute; inset:-18px; border:1px solid rgba(18,196,234,.65); border-radius:50%; transform:rotateX(68deg) rotateZ(12deg); box-shadow:0 0 36px rgba(18,196,234,.25); }
+    #orbit .orbit-core:after { inset:-36px; border-color:rgba(255,255,255,.17); transform:rotateY(68deg) rotateZ(-18deg); }
+    #orbit .orbit-logo { width:88%; height:88%; object-fit:contain; filter:drop-shadow(0 0 2px #12c4ea) drop-shadow(0 18px 24px rgba(18,196,234,.35)); }
+    /* Focused two-section version: hero + orbit only. */
+
+
+    #orbit .orbit-glow { position:absolute; width:45%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle,rgba(18,196,234,.25),transparent 68%); filter:blur(18px); }
+    #orbit .orbit-core { transform-style:preserve-3d; transition:transform .18s ease-out; }
+    #orbit.orbit-active .orbit-core { animation:none; }
+#orbit .orbit-core:before, #orbit .orbit-core:after { display:none; }
+    #orbit .orbit-depth { display:none; }
+
+    #orbit .orbit-depth { position:absolute; inset:7%; border-radius:50%; background:radial-gradient(circle at 32% 24%,rgba(18,196,234,.3),rgba(4,18,31,.86) 58%,#02070d 100%); border:1px solid rgba(18,196,234,.4); box-shadow:inset -22px -18px 34px rgba(0,0,0,.65), inset 10px 10px 25px rgba(18,196,234,.16), 0 0 45px rgba(18,196,234,.22); transform:translateZ(-18px); }
+    #orbit .orbit-logo { position:relative; z-index:2; transform:translateZ(28px) rotateX(7deg) rotateY(-9deg); animation:logoFloat 4s ease-in-out infinite; filter:drop-shadow(12px 18px 0 rgba(2,10,18,.38)) drop-shadow(0 0 16px rgba(18,196,234,.5)); }
+    #orbit .orbit-particles { position:absolute; inset:8% 12%; pointer-events:none; transform-style:preserve-3d; }
+    #orbit .orbit-particles i { position:absolute; width:clamp(3px,.45vw,7px); aspect-ratio:1; border-radius:50%; background:#12c4ea; box-shadow:0 0 12px #12c4ea; animation:particleDrift 5s ease-in-out infinite; opacity:.75; }
+    #orbit .orbit-particles i:nth-child(1){left:8%;top:30%;animation-delay:-.4s}.orbit-particles i:nth-child(2){left:18%;top:65%;animation-delay:-2s}.orbit-particles i:nth-child(3){left:29%;top:14%;animation-delay:-1.2s}.orbit-particles i:nth-child(4){left:42%;top:78%;animation-delay:-3.1s}.orbit-particles i:nth-child(5){left:55%;top:9%;animation-delay:-1.8s}.orbit-particles i:nth-child(6){left:69%;top:72%;animation-delay:-.8s}.orbit-particles i:nth-child(7){left:82%;top:22%;animation-delay:-2.6s}.orbit-particles i:nth-child(8){left:91%;top:56%;animation-delay:-1.5s}.orbit-particles i:nth-child(9){left:15%;top:44%;animation-delay:-4s;background:#fff}.orbit-particles i:nth-child(10){left:75%;top:42%;animation-delay:-3.6s;background:#fff}.orbit-particles i:nth-child(11){left:36%;top:92%;animation-delay:-2.2s}.orbit-particles i:nth-child(12){left:62%;top:25%;animation-delay:-4.4s}
+    #orbit .orbit-network { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:auto; opacity:.9; transition:transform .25s ease-out; transform-origin:center; }
+    #orbit .network-lines { fill:none !important; }
+    #orbit .network-lines path { fill:none !important; stroke:rgba(18,196,234,.42) !important; stroke-width:1.2; stroke-linecap:round; stroke-dasharray:5 9; animation:neuralPulse 5s linear infinite; filter:drop-shadow(0 0 4px rgba(18,196,234,.55)); }
+    #orbit .network-lines path:nth-child(2n) { animation-delay:-2s; stroke:rgba(255,255,255,.24); }
+    #orbit .network-cells circle { fill:#071a2d; stroke:#12c4ea; stroke-width:2; filter:drop-shadow(0 0 7px rgba(18,196,234,.9)); animation:cellPulse 2.8s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+    #orbit .network-cells circle:nth-child(2n) { fill:#12c4ea; stroke:#d9fbff; stroke-width:1.2; }
+    /* Refined neural field: quiet around the logo, denser toward the edges. */
+    #orbit .orbit-network { z-index:0; opacity:.58; -webkit-mask-image:radial-gradient(ellipse at center, transparent 0%, transparent 18%, rgba(0,0,0,.28) 28%, #000 48%, #000 100%); mask-image:radial-gradient(ellipse at center, transparent 0%, transparent 18%, rgba(0,0,0,.28) 28%, #000 48%, #000 100%); }
+    #orbit .network-lines path { stroke:rgba(18,196,234,.34) !important; stroke-width:.9; stroke-dasharray:3 11; }
+    #orbit .network-cells circle { r:4; opacity:.68; filter:drop-shadow(0 0 5px rgba(18,196,234,.65)); }
+    #orbit .network-cells circle:nth-child(2n) { r:3; }
+    #orbit .orbit-word { z-index:3; text-shadow:0 10px 30px rgba(0,0,0,.25); }
+    #orbit .orbit-core { z-index:4; }
+    #orbit .orbit-keywords { z-index:5; }
+    @keyframes neuralPulse { to { stroke-dashoffset:-56; } }
+    @keyframes cellPulse { 0%,100%{transform:scale(.82);opacity:.65}50%{transform:scale(1.2);opacity:1} }    #orbit .orbit-keywords { position:absolute; bottom:13%; left:50%; z-index:4; display:flex; flex-wrap:wrap; justify-content:center; gap:.65rem; width:min(600px,80vw); transform:translateX(-50%); pointer-events:none; }
+    #orbit .orbit-keywords span { padding:.35rem .7rem; border:1px solid rgba(18,196,234,.4); border-radius:999px; color:rgba(255,255,255,.72); background:rgba(7,20,32,.54); font:700 .65rem/1 'Space Grotesk',sans-serif; letter-spacing:.15em; opacity:0; transform:translateY(18px) scale(.85); transition:opacity .45s ease,transform .55s cubic-bezier(.2,.8,.2,1); }
+    #orbit.orbit-active .orbit-keywords span { opacity:1; transform:translateY(0) scale(1); }
+    #orbit.orbit-active .orbit-keywords span:nth-child(2){transition-delay:.06s}#orbit.orbit-active .orbit-keywords span:nth-child(3){transition-delay:.12s}#orbit.orbit-active .orbit-keywords span:nth-child(4){transition-delay:.18s}#orbit.orbit-active .orbit-keywords span:nth-child(5){transition-delay:.24s}#orbit.orbit-active .orbit-keywords span:nth-child(6){transition-delay:.3s}
+    @keyframes logoFloat { 0%,100%{margin-top:0}50%{margin-top:-10px} }
+    @keyframes particleDrift { 0%,100%{transform:translate3d(0,0,0) scale(.75)}50%{transform:translate3d(10px,-18px,28px) scale(1.35)} }
+    #orbit .orbit-kicker { position:absolute; top:8%; left:50%; transform:translateX(-50%); font-size:.75rem; letter-spacing:.22em; color:#12c4ea; font-weight:800; white-space:nowrap; }
+    #orbit .orbit-caption { position:absolute; bottom:8%; left:50%; transform:translateX(-50%); color:rgba(255,255,255,.48); font-size:.9rem; white-space:nowrap; }
+    .english .arabic-copy { display:none; } .arabic-copy { display:inline; } .english .english-copy { display:inline; } .english-copy { display:none; }
+    @keyframes logoSpin { from{transform:rotateY(-10deg) rotateX(4deg)} to{transform:rotateY(10deg) rotateX(4deg)} }
+    @keyframes logoBurst { 0%{transform:rotateY(0deg) rotateX(4deg)} 12%{transform:rotateY(720deg) rotateX(8deg)} 30%{transform:rotateY(1800deg) rotateX(-5deg)} 52%{transform:rotateY(2700deg) rotateX(4deg)} 72%{transform:rotateY(3240deg) rotateX(2deg)} 88%{transform:rotateY(3480deg) rotateX(4deg)} 100%{transform:rotateY(3600deg) rotateX(4deg)} }
+    #navCta, #top > section > .max-w-7xl > div:first-child > div.mt-9 a:first-child, #demos button, #contact button { background:#12c4ea !important; color:#fff !important; box-shadow:0 10px 22px rgba(18,196,234,.22); }
+    #navCta:hover, #top > section > .max-w-7xl > div:first-child > div.mt-9 a:first-child:hover, #demos button:hover, #contact button:hover { background:#10243a !important; color:#fff !important; }
+    #work > .max-w-7xl, #journal > .max-w-7xl, #contact > .max-w-7xl { padding-top:24px; padding-bottom:24px; }
+    #top > section { align-items:flex-start; padding-top:92px !important; padding-bottom:54px !important; }
+    #top > section > .max-w-7xl { padding-bottom:0; transform:none; }
+    #top > section > .max-w-7xl > div:first-child > .mt-14 { margin-top:24px !important; margin-bottom:46px !important; position:relative; z-index:2; transform:none; }
+    #top > section > .max-w-7xl > div:first-child > .mt-14 > div:not(.h-10) { padding:10px 14px; border-radius:14px; background:rgba(255,255,255,.78); }
+    #top > section > .max-w-7xl > div:first-child > .mt-14 > .h-10 { padding:0; border-radius:0; background:rgba(16,36,58,.15); }
+    #work > .max-w-7xl > .mb-14 { margin-bottom:26px !important; }
+    #work > .max-w-7xl { padding-top:4px; padding-bottom:10px; }
+    #work > .max-w-7xl > .mb-14 h2 { font-size:clamp(2rem,3.5vw,3.25rem) !important; }
+    #work article { min-height:300px !important; border:1px solid rgba(16,36,58,.08); box-shadow:0 12px 30px rgba(16,36,58,.06); transition:transform .35s ease,box-shadow .35s ease; }
+    #work article > div:nth-child(2) { margin-top:18px !important; }
+    #work article > div:nth-child(2) > div { transform:scale(.9); transform-origin:center; }
+    #work article:nth-child(1) { background:linear-gradient(145deg,#dfe6ff,#cdd8ff) !important; }
+    #work article:nth-child(2) { background:linear-gradient(145deg,#18bdd8,#06a8c8) !important; }
+    #work article > div:first-child { position:relative; z-index:2; }
+    #work article > div:first-child span { padding:5px 9px; border-radius:999px; background:rgba(255,255,255,.58); font-size:.75rem; }
+    #work article:nth-child(2) > div:first-child span { background:rgba(16,36,58,.16); }
+    #work article:hover { transform:translateY(-7px); box-shadow:0 24px 45px rgba(16,36,58,.13); }
+    #work article > div:nth-child(2) { transition:transform .35s ease; }
+    #work article:hover > div:nth-child(2) { transform:scale(1.035) rotate(-1deg); }
+    #journal { background:linear-gradient(135deg,#fff 0%,#f7fbfc 100%) !important; }
+    #journal > .max-w-7xl > .flex { margin-bottom:28px !important; }
+    #journal article { min-height:245px; padding:20px; border:1px solid rgba(16,36,58,.1); border-top:4px solid #12c4ea; border-radius:18px; background:rgba(255,255,255,.72); box-shadow:0 10px 24px rgba(16,36,58,.04); transition:transform .3s ease, background .3s ease; }
+    #journal article:hover { transform:translateY(-6px); background:#fff; }
+    #journal article h3 { font-size:1.35rem; }
+    #journal article a { color:#12c4ea; }
+    #contact { position:relative; overflow:hidden; }
+    #contact:after { content:'KG'; position:absolute; left:6%; bottom:-20%; font-family:'Space Grotesk',sans-serif; font-size:clamp(12rem,28vw,28rem); font-weight:700; line-height:.8; color:rgba(8,126,255,.06); pointer-events:none; }
+    #contact > .max-w-7xl { position:relative; z-index:1; }
+    #contact .max-w-sm { padding:26px; border:1px solid rgba(16,36,58,.12); border-radius:22px; background:rgba(255,255,255,.34); box-shadow:0 18px 42px rgba(16,36,58,.08); }
+    #contact button { box-shadow:0 12px 24px rgba(16,36,58,.16); }
+    @media (max-width:767px) { #top > section { padding-top:82px !important; } #top > section > .max-w-7xl { padding-bottom:0; } #work article { min-height:280px !important; } #journal article { min-height:0; } #contact:after { font-size:11rem; } }
+    @media (min-width:768px) and (max-height:850px) {
+      #top > section { padding-top:74px !important; padding-bottom:26px !important; }
+      #top h1 { font-size:clamp(3.15rem,5.1vw,4.45rem) !important; line-height:.94 !important; }
+      #top > section > .max-w-7xl > div:first-child > p.mt-7 { margin-top:12px !important; line-height:1.55 !important; }
+      #top > section > .max-w-7xl > div:first-child > div.mt-9 { margin-top:16px !important; }
+      #top > section > .max-w-7xl { gap:24px; }
+      #top > section > .max-w-7xl > div:first-child > .mt-14 { margin-top:12px !important; margin-bottom:46px !important; transform:none; }
+      #top > section > .max-w-7xl > div:first-child > .mt-14 > div:not(.h-10) { padding:6px 12px; }
+      #top > section > .max-w-7xl > div:nth-child(2) { min-height:420px; }
+      #top .hero-orb { width:330px !important; top:34px !important; right:24px !important; }
+      #top .signal { bottom:36px !important; right:0 !important; transform:scale(.86) rotate(-8deg); }
+      #top .absolute.top-8.right-0 { width:250px; height:250px; }
+      #top .absolute.bottom-4.left-2 { width:190px; height:190px; }
+    }
     .menu-panel { background:#ffffff !important; color:#10243a !important; }
     .menu-panel .text-white\/45 { color:rgba(16,36,58,.48) !important; }
     .menu-panel .text-white\/55 { color:rgba(16,36,58,.62) !important; }
     .menu-panel .text-white\/60 { color:rgba(16,36,58,.68) !important; }
     .menu-panel .border-white\/10 { border-color:#dbe8ee !important; }
     .menu-panel .bg-white\/8 { background:#f5f9fa !important; }
-    .menu-panel .text-lime { color:#087eff !important; }
+    .menu-panel .text-lime { color:#12c4ea !important; }
     .menu-panel .bg-lime { background:#0b9bd7 !important; color:#fff !important; }
     .menu-panel .bg-ink { background:#10243a !important; color:#fff !important; }
-    .menu-panel .menu-card > div:first-child { width:44px !important; height:44px !important; margin-bottom:22px !important; border-radius:14px !important; background:#e6f5f8 !important; color:#087eff !important; font-size:1.15rem !important; box-shadow:inset 0 0 0 1px rgba(8,126,255,.08); }
+    .menu-panel .menu-card > div:first-child { width:44px !important; height:44px !important; margin-bottom:22px !important; border-radius:14px !important; background:#e6f5f8 !important; color:#12c4ea !important; font-size:1.15rem !important; box-shadow:inset 0 0 0 1px rgba(8,126,255,.08); }
     #services article > div:first-child { width:48px; height:48px; border-radius:16px; display:grid; place-items:center; background:#eaf6fa; }
     #demos button { display:inline-flex; align-items:center; gap:.45rem; }
+    /* Final services fit: keep the whole composition inside one desktop viewport. */
+    @media (min-width:768px) {
+      #services { padding-top:16px !important; padding-bottom:16px !important; }
+      #services > .max-w-7xl { gap:14px !important; justify-content:center !important; }
+      #services > .max-w-7xl > .flex { gap:18px !important; align-items:end !important; }
+      #services > .max-w-7xl > .flex h2 {
+        margin-top:6px !important;
+        font-size:clamp(2.35rem,3.75vw,3.45rem) !important;
+        line-height:1.01 !important;
+      }
+      #services > .max-w-7xl > .flex > div:first-child:after {
+        margin-top:10px !important;
+        padding:6px 10px !important;
+      }
+      #services > .max-w-7xl > .flex > p {
+        padding:14px 17px !important;
+        font-size:.92rem !important;
+        line-height:1.65 !important;
+      }
+      #services > .max-w-7xl > .grid { gap:12px !important; }
+      #services article {
+        height:clamp(230px,34dvh,260px) !important;
+        min-height:0 !important;
+        padding:17px !important;
+        transform:none !important;
+      }
+      #services article:hover { transform:translateY(-6px) !important; }
+      #services article > div:first-child {
+        width:42px !important;
+        height:42px !important;
+        border-radius:13px !important;
+      }
+      #services article:where(:nth-child(1),:nth-child(2),:nth-child(3),:nth-child(4)) > div:first-child:after {
+        top:19px !important;
+        left:19px !important;
+      }
+      #services article h3 {
+        font-size:1.12rem !important;
+        line-height:1.2 !important;
+      }
+      #services article h3:before { margin-bottom:9px !important; }
+      #services article p {
+        font-size:.8rem !important;
+        line-height:1.5 !important;
+      }
+    }
+    /* Final demos fit: full cards stay visible on short desktop screens. */
+    @media (min-width:1024px) {
+      #demos { padding-top:72px !important; padding-bottom:14px !important; }
+      #demos > .max-w-7xl { display:flex; flex-direction:column; justify-content:center; gap:14px !important; }
+      #demos > .max-w-7xl > .flex {
+        margin-bottom:18px !important;
+        gap:18px !important;
+        align-items:start !important;
+      }
+      #demos > .max-w-7xl > .flex h2 {
+        margin-top:8px !important;
+        font-size:clamp(2.4rem,4vw,3.5rem) !important;
+        line-height:1.02 !important;
+      }
+      #demos > .max-w-7xl > .flex p {
+        font-size:.94rem !important;
+        line-height:1.65 !important;
+      }
+      #demos > .max-w-7xl > .grid {
+        height:280px !important;
+        min-height:0 !important;
+        gap:14px !important;
+        align-items:stretch !important;
+      }
+      #demos article {
+        height:280px !important;
+        min-height:0 !important;
+        padding:12px !important;
+        border-radius:20px !important;
+        overflow:hidden !important;
+      }
+      #demos article > div:first-child {
+        height:clamp(155px,25dvh,190px) !important;
+        padding:14px !important;
+      }
+      #demos article > div:first-child .mt-7 { margin-top:16px !important; }
+      #demos article > div:first-child .mt-8 { margin-top:17px !important; }
+      #demos article > div:first-child .h-24 { height:74px !important; }
+      #demos article > div:first-child .h-28 { height:88px !important; }
+      #demos article > div:first-child b.text-2xl { margin-top:6px !important; font-size:1.25rem !important; }
+      #demos article > div:nth-child(2) { padding:13px 10px 6px !important; }
+      #demos article h3 { font-size:1.08rem !important; }
+      #demos article button { padding:8px 13px !important; font-size:.78rem !important; }
+      #demos article p { margin-top:6px !important; font-size:.76rem !important; }
+
+      #work { padding-top:72px !important; padding-bottom:14px !important; }
+      #work > .max-w-7xl { padding-top:0 !important; padding-bottom:0 !important; }
+      #work > .max-w-7xl > .mb-14 { margin-bottom:18px !important; }
+      #work > .max-w-7xl > .mb-14 h2 {
+        margin-top:8px !important;
+        font-size:clamp(2.35rem,3.8vw,3.35rem) !important;
+        line-height:1.02 !important;
+      }
+      #work > .max-w-7xl > .grid {
+        height:300px !important;
+        min-height:0 !important;
+        gap:14px !important;
+      }
+      #work article {
+        height:300px !important;
+        min-height:0 !important;
+        padding:16px !important;
+        border-radius:20px !important;
+      }
+      #work article > div:nth-child(2) {
+        margin-top:16px !important;
+        transform:scale(.82) !important;
+        transform-origin:top center !important;
+      }
+      #work article:hover > div:nth-child(2) { transform:scale(.86) rotate(-1deg) !important; }
+    }
+    /* Full-width showreel section. */
+    #reel { padding:0 !important; background:#07131f !important; }
+    #reel .video-shell { position:absolute; inset:0; width:100%; height:auto; overflow:hidden; isolation:isolate; }
+    #reel .showreel-video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .45s ease; }
+    #reel.video-ready .showreel-video { opacity:1; }
+    #reel .video-placeholder { position:absolute; inset:0; z-index:-1; background:radial-gradient(circle at 68% 35%,rgba(18,196,234,.27),transparent 28%),radial-gradient(circle at 30% 72%,rgba(36,82,126,.42),transparent 34%),linear-gradient(135deg,#07131f,#102d49 55%,#07131f); }
+    #reel .video-placeholder:before { content:''; position:absolute; inset:-30%; opacity:.22; background-image:linear-gradient(rgba(18,196,234,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(18,196,234,.3) 1px,transparent 1px); background-size:64px 64px; transform:perspective(700px) rotateX(58deg) translateY(22%); animation:reelGrid 14s linear infinite; }
+    #reel .video-shade { position:absolute; inset:0; background:linear-gradient(90deg,rgba(4,13,22,.9) 0%,rgba(4,13,22,.52) 46%,rgba(4,13,22,.18) 100%); pointer-events:none; }
+    #reel .video-copy { position:relative; z-index:2; height:100%; max-width:1160px; margin:auto; padding:76px 40px 26px; display:flex; flex-direction:column; justify-content:center; align-items:flex-start; }
+    #reel .video-copy h2 { margin-top:12px; max-width:760px; font-size:clamp(3rem,6.5vw,6.5rem) !important; line-height:.9 !important; letter-spacing:-.06em; }
+    #reel .video-copy h2 span { color:#12c4ea; }
+    #reel .video-copy p { max-width:470px; margin-top:18px; color:rgba(255,255,255,.65); font-size:1rem; line-height:1.75; }
+    #reel .video-play { margin-top:24px; display:inline-flex; align-items:center; gap:12px; padding:12px 18px; border:1px solid rgba(18,196,234,.55); border-radius:999px; background:rgba(7,19,31,.62); color:#fff; font-weight:700; backdrop-filter:blur(12px); transition:transform .25s ease,background .25s ease; }
+    #reel .video-play:hover { transform:translateY(-3px); background:#12c4ea; }
+    #reel .video-play-icon { width:34px; height:34px; display:grid; place-items:center; border-radius:50%; background:#12c4ea; color:#07131f; }
+    #reel.video-playing .video-copy { opacity:0; pointer-events:none; transition:opacity .35s ease; }
+    #reel.video-playing .video-shade { opacity:.18; transition:opacity .35s ease; }
+    @media (max-width:767px) { #reel .video-copy { padding:82px 20px 24px; } #reel .video-copy h2 { font-size:clamp(2.7rem,13vw,4.8rem) !important; } }
+    .journal-image { width:100%; height:104px; object-fit:cover; border-radius:13px; display:block; margin-bottom:12px; transition:transform .45s cubic-bezier(.22,1,.36,1); }
+    #journal article:hover .journal-image { transform:scale(1.035); }
+    .social-links { display:flex; flex-wrap:wrap; align-items:center; gap:8px; direction:ltr; }
+    .social-link { width:36px; height:36px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.17); border-radius:11px; color:rgba(255,255,255,.68); background:rgba(255,255,255,.055); transition:transform .25s ease,color .25s ease,background .25s ease,border-color .25s ease; }
+    .social-link:hover { transform:translateY(-4px); color:#07131f; background:#12c4ea; border-color:#12c4ea; }
+    .social-link svg { width:17px; height:17px; fill:currentColor; }
+    @media (min-width:768px) {
+      #journal { padding-top:72px !important; padding-bottom:14px !important; }
+      #journal > .max-w-7xl { padding-top:0 !important; padding-bottom:0 !important; }
+      #journal > .max-w-7xl > .flex { margin-bottom:18px !important; }
+      #journal > .max-w-7xl > .flex h2 { margin-top:8px !important; font-size:clamp(2.3rem,3.7vw,3.3rem) !important; line-height:1.02 !important; }
+      #journal article { height:292px; min-height:0; padding:13px; overflow:hidden; }
+      #journal article h3 { margin-top:10px !important; font-size:1.08rem !important; }
+      #journal article p { margin-top:8px !important; font-size:.79rem !important; line-height:1.55 !important; }
+      #journal article a { margin-top:11px !important; font-size:.82rem !important; }
+    }
+    #contact {
+      position:relative;
+      isolation:isolate;
+      color:#fff;
+      background-image:linear-gradient(90deg,rgba(4,13,22,.22) 0%,rgba(4,13,22,.38) 48%,rgba(4,13,22,.12) 100%),url('/assets/contact-bg-kg-v2.png') !important;
+      background-size:cover !important;
+      background-position:center !important;
+      background-repeat:no-repeat !important;
+    }
+    #contact:before { content:''; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg,rgba(7,19,31,.08),rgba(7,19,31,.38)); pointer-events:none; }
+    #contact:after { display:none !important; }
+    #contact > .max-w-7xl { position:relative; z-index:1; }
+    #contact .max-w-sm { border-color:rgba(255,255,255,.22) !important; background:rgba(7,19,31,.58) !important; color:#fff; backdrop-filter:blur(16px); box-shadow:0 22px 54px rgba(0,0,0,.28); }
+    #contact .max-w-sm p { color:rgba(255,255,255,.78); }
+    #contact button { background:#12c4ea !important; color:#07131f !important; }
+    #contact button:hover { background:#fff !important; color:#10243a !important; }
   </style>
 </head>
 <body>
   <div class="cursor-glow" id="cursorGlow"></div>
-  <header class="fixed top-0 inset-x-0 z-50 px-4 md:px-8 py-4">
-    <nav class="max-w-7xl mx-auto flex items-center justify-between bg-white/85 backdrop-blur-xl border border-black/10 rounded-2xl px-4 md:px-6 py-3 shadow-sm">
-      <a href="#top" class="flex items-center gap-2 font-black text-lg tracking-tight"><img src="/assets/brand/kg-user-black.png" alt="K G Neural Tech" class="w-11 h-11 rounded-xl bg-black p-1 object-contain shadow-sm" />KeenGuild</a>
-      <div class="flex items-center gap-3"><button id="menuButton" onclick="toggleMenu()" aria-expanded="false" class="bg-white text-ink border border-[#d6e6ec] rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-[#eef8fb] transition flex items-center gap-2"><span id="menuLabel">استكشف</span><span id="menuIcon" class="text-lg leading-none text-[#087eff]">＋</span></button><a href="#contact" class="hidden sm:inline-flex bg-[#0b9bd7] text-white rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-ink transition">ابدأ مشروعك ↗</a></div>
+  <header class="fixed top-0 inset-x-0 z-50">
+    <nav class="relative w-full flex items-center justify-between bg-white/90 backdrop-blur-xl border-b border-black/10 px-5 md:px-10 py-3 shadow-sm">
+      <a href="#top" class="flex items-center gap-2 font-black text-lg tracking-tight"><img src="/assets/brand/favicon-new.png" alt="KeenGuild logo" class="w-11 h-11 rounded-xl bg-transparent p-0 object-contain" />KeenGuild</a>
+      <div class="hidden xl:flex items-center gap-1 text-sm font-bold text-black/55"><a href="#services" class="nav-link px-3 py-2 rounded-lg hover:bg-[#eef8fb] hover:text-ink transition">الخدمات</a><a href="#demos" class="nav-link px-3 py-2 rounded-lg hover:bg-[#eef8fb] hover:text-ink transition">التجارب</a><a href="#work" class="nav-link px-3 py-2 rounded-lg hover:bg-[#eef8fb] hover:text-ink transition">أعمالنا</a><a href="#journal" class="nav-link px-3 py-2 rounded-lg hover:bg-[#eef8fb] hover:text-ink transition">الأفكار</a></div>
+      <div class="hidden lg:flex items-center gap-5 text-xs font-bold text-black/50"><span>استوديو منتجات رقمية</span><span class="w-1.5 h-1.5 rounded-full bg-[#12c4ea]"></span><span>متاح لمشاريع جديدة</span></div>
+      <div class="flex items-center gap-3"><button id="languageButton" onclick="setLanguage(document.documentElement.lang === 'ar' ? 'en' : 'ar')" class="hidden sm:inline-flex bg-white text-ink border border-[#d6e6ec] rounded-xl px-3 py-2.5 text-xs font-black hover:bg-[#eef8fb] transition">EN</button><button id="menuButton" onclick="toggleMenu()" aria-expanded="false" class="bg-white text-ink border border-[#d6e6ec] rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-[#eef8fb] transition flex items-center gap-2"><span id="menuLabel">استكشف</span><span id="menuIcon" class="text-lg leading-none text-[#12c4ea]">＋</span></button><a id="navCta" href="#contact" class="hidden sm:inline-flex bg-[#0b9bd7] text-white rounded-xl px-4 py-2.5 text-sm font-bold hover:bg-ink transition">ابدأ مشروعك ↗</a></div>
+      <div class="page-progress" aria-label="تقدم الصفحة"><div id="pageProgressFill" class="page-progress-fill"></div></div>
     </nav>
   </header>
 
@@ -74,7 +501,7 @@
         <div class="pt-5"><span class="text-sm font-bold text-lime">خريطة KeenGuild</span><h2 class="text-4xl md:text-6xl font-bold leading-tight mt-5">كل ما تحتاجه<br><span class="text-white/45">في مكان واحد.</span></h2><p class="text-white/60 text-lg leading-8 mt-6 max-w-sm">من أول شرارة إلى منتج يعمل ويكبر. اختر المسار الذي تريد استكشافه.</p><a href="#contact" onclick="closeMenu()" class="inline-flex mt-8 bg-lime text-ink rounded-xl px-5 py-3 font-bold">لنتحدث عن فكرتك ↗</a></div>
         <div class="grid sm:grid-cols-2 gap-4">
           <a href="#services" onclick="closeMenu()" class="menu-card rounded-3xl bg-white/8 border border-white/10 p-6 hover:bg-white/15 transition group"><div class="w-12 h-12 rounded-2xl bg-lime text-ink grid place-items-center text-2xl mb-12">✦</div><div class="text-xs text-white/45">01 / BUILD</div><h3 class="text-2xl font-bold mt-2">الخدمات</h3><p class="text-white/55 mt-2 leading-7">استراتيجية، تصميم، وتطوير ينقل الفكرة إلى الواقع.</p><span class="block mt-6 text-lime group-hover:translate-x-[-5px] transition">استكشف المسار ←</span></a>
-          <a href="#demos" onclick="closeMenu()" class="menu-card rounded-3xl bg-white/8 border border-white/10 p-6 hover:bg-white/15 transition group"><div class="w-12 h-12 rounded-2xl bg-[#087eff] text-white grid place-items-center text-2xl mb-12">◈</div><div class="text-xs text-white/45">02 / TRY</div><h3 class="text-2xl font-bold mt-2">التجارب</h3><p class="text-white/55 mt-2 leading-7">نماذج حية تساعدك ترى الفكرة قبل أن تستثمر فيها.</p><span class="block mt-6 text-lime group-hover:translate-x-[-5px] transition">جرّب الآن ←</span></a>
+          <a href="#demos" onclick="closeMenu()" class="menu-card rounded-3xl bg-white/8 border border-white/10 p-6 hover:bg-white/15 transition group"><div class="w-12 h-12 rounded-2xl bg-[#12c4ea] text-white grid place-items-center text-2xl mb-12">◈</div><div class="text-xs text-white/45">02 / TRY</div><h3 class="text-2xl font-bold mt-2">التجارب</h3><p class="text-white/55 mt-2 leading-7">نماذج حية تساعدك ترى الفكرة قبل أن تستثمر فيها.</p><span class="block mt-6 text-lime group-hover:translate-x-[-5px] transition">جرّب الآن ←</span></a>
           <a href="#work" onclick="closeMenu()" class="menu-card rounded-3xl bg-white/8 border border-white/10 p-6 hover:bg-white/15 transition group"><div class="w-12 h-12 rounded-2xl bg-[#d5ddff] text-ink grid place-items-center text-2xl mb-12">⌁</div><div class="text-xs text-white/45">03 / SHAPE</div><h3 class="text-2xl font-bold mt-2">أعمالنا</h3><p class="text-white/55 mt-2 leading-7">تصميمات ممكنة لمنتجات ومواقع تشبه طموحك.</p><span class="block mt-6 text-lime group-hover:translate-x-[-5px] transition">شاهد المختارات ←</span></a>
           <a href="#journal" onclick="closeMenu()" class="menu-card rounded-3xl bg-white/8 border border-white/10 p-6 hover:bg-white/15 transition group"><div class="w-12 h-12 rounded-2xl bg-white text-ink grid place-items-center text-2xl mb-12">☷</div><div class="text-xs text-white/45">04 / THINK</div><h3 class="text-2xl font-bold mt-2">المدونة</h3><p class="text-white/55 mt-2 leading-7">أفكار عملية عن المنتجات، التجربة، والنمو الذكي.</p><span class="block mt-6 text-lime group-hover:translate-x-[-5px] transition">اقرأ الأفكار ←</span></a>
         </div>
@@ -88,7 +515,7 @@
       <div class="max-w-7xl mx-auto grid md:grid-cols-[1.05fr_.95fr] gap-8 lg:gap-12 items-center">
         <div class="reveal">
           <div class="inline-flex items-center gap-2 pill mb-7 bg-white"><span class="w-2 h-2 rounded-full bg-lime-600"></span>استوديو رقمي من القاهرة إلى العالم</div>
-          <h1 class="text-4xl md:text-6xl xl:text-[76px] leading-[1.08] font-bold tracking-[-.045em] max-w-3xl">التميّز لا يُشرح.<br><span class="text-[#087eff]">يُلاحظ.</span></h1>
+          <h1 class="text-4xl md:text-6xl xl:text-[76px] leading-[1.08] font-bold tracking-[-.045em] max-w-3xl">التميّز لا يُشرح.<br><span class="text-[#12c4ea]">يُلاحظ.</span></h1>
           <p class="mt-7 text-lg md:text-xl leading-9 max-w-xl text-black/65">نصنع منتجات رقمية هادئة في شكلها، دقيقة في تفاصيلها، وواضحة في أثرها.</p>
           <div class="mt-9 flex flex-wrap gap-3"><a href="#demos" class="bg-ink text-white px-6 py-4 rounded-xl font-bold hover:bg-lime hover:text-ink transition">شاهد ما نبنيه <span class="mr-2">↓</span></a><a href="#work" class="px-6 py-4 rounded-xl font-bold border border-black/15 hover:bg-white transition">تصفّح أعمالنا</a></div>
           <div class="mt-14 flex items-center gap-8 text-sm"><div><strong class="text-3xl font-black">24+</strong><p class="text-black/50 mt-1">منتج أطلقناه</p></div><div class="h-10 w-px bg-black/15"></div><div><strong class="text-3xl font-black">9</strong><p class="text-black/50 mt-1">قطاعات نفهمها</p></div></div>
@@ -105,22 +532,44 @@
       <div class="absolute bottom-0 left-0 right-0 border-y border-black/10 py-4 overflow-hidden whitespace-nowrap"><div class="marquee flex gap-10 text-sm font-semibold text-black/40"><span>الوضوح قوة ✦</span><span>التفاصيل تصنع الفرق ✦</span><span>تجارب تستحق التذكر ✦</span><span>منتجات تنمو بثقة ✦</span><span>الوضوح قوة ✦</span><span>التفاصيل تصنع الفرق ✦</span><span>تجارب تستحق التذكر ✦</span><span>منتجات تنمو بثقة ✦</span></div></div>
     </section>
 
-    <section id="services" class="px-5 md:px-10 py-28 bg-white"><div class="max-w-7xl mx-auto"><div class="flex flex-col md:flex-row justify-between gap-6 mb-14 reveal"><div><span class="text-sm font-bold text-[#087eff]">01 / ما نصنعه</span><h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-4">أفكار كبيرة،<br>تنفيذ أكثر هدوءًا.</h2></div><p class="max-w-md text-black/60 text-lg leading-8">نحذف الضوضاء من الطريق حتى يظهر جوهر المنتج، ويشعر العميل بقيمته من أول لحظة.</p></div><div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4"> <article class="reveal bg-ink text-white rounded-3xl p-7 min-h-[300px] flex flex-col justify-between"><div class="text-4xl text-[#087eff]" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.4 5.6L20 11l-5.6 2.4L12 19l-2.4-5.6L4 11l5.6-2.4L12 3Z"/><path d="m19 3 .7 1.3L21 5l-1.3.7L19 7l-.7-1.3L17 5l1.3-.7L19 3Z"/></svg></div><div><h3 class="text-2xl font-black">منتجات SaaS</h3><p class="mt-3 text-white/60 leading-7">نبني أدوات اشتراك تستمر في التطور مع عملائك.</p></div></article><article class="reveal bg-mist rounded-3xl p-7 min-h-[300px] flex flex-col justify-between"><div class="text-4xl text-[#087eff]" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="m8 10 3 3 5-5"/></svg></div><div><h3 class="text-2xl font-black">مواقع تجارية</h3><p class="mt-3 text-black/55 leading-7">موقع يشرح قيمتك بسرعة ويحوّل الزيارة إلى فرصة.</p></div></article><article class="reveal bg-[#d5ddff] rounded-3xl p-7 min-h-[300px] flex flex-col justify-between"><div class="text-4xl text-[#087eff]" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 18 4M7 4h-3v3M17 20h3v-3"/><path d="M8 20h8M4 16V8"/></svg></div><div><h3 class="text-2xl font-black">تصميم UX/UI</h3><p class="mt-3 text-black/55 leading-7">تجارب واضحة، جميلة، وسهلة الاستخدام من أول لمسة.</p></div></article><article class="reveal bg-lime rounded-3xl p-7 min-h-[300px] flex flex-col justify-between"><div class="text-4xl text-[#087eff]" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="7"/><path d="m9 12 2 2 4-4"/></svg></div><div><h3 class="text-2xl font-black">حلول مخصصة</h3><p class="mt-3 text-black/65 leading-7">نربط عملياتك ونقلل الخطوات التي تعطل فريقك.</p></div></article></div></div></section>
+    <section id="proof" class="proof-section px-5 md:px-10 bg-ink text-white" style="height:100dvh!important;min-height:100dvh!important;padding-top:24px!important;padding-bottom:24px!important;scroll-margin-top:0;display:flex!important;align-items:center!important"><div class="max-w-7xl mx-auto w-full"><div class="flex flex-col md:flex-row md:items-end justify-between gap-8 proof-intro" style="margin-bottom:12px!important"><div><span class="text-sm font-bold text-lime">لماذا KeenGuild؟</span><h2 class="text-4xl md:text-5xl font-black mt-4">من الفكرة<br><span class="text-white/40">إلى أثر حقيقي.</span></h2></div><p class="max-w-md text-white/60 text-lg leading-8">نرتب الطريق حول هدفك، ونبقيك قريبًا من كل قرار مهم حتى يصل المنتج بالشكل الذي يستحقه.</p></div><div class="proof-grid grid md:grid-cols-4 gap-px overflow-hidden rounded-3xl bg-white/15 border border-white/10" style="height:auto!important;min-height:0!important;max-height:none!important;grid-auto-rows:auto!important"><article class="proof-card p-6 md:p-7 bg-ink" style="height:194px!important;min-height:194px!important"><span class="text-lime font-black text-3xl">01</span><h3 class="mt-14 text-xl font-black">وضوح من البداية</h3><p class="mt-3 text-white/55 leading-7">نحوّل الفكرة إلى اتجاه واضح قبل التنفيذ.</p><span class="proof-meta">DIRECTION / 01</span></article><article class="proof-card p-6 md:p-7 bg-ink" style="height:194px!important;min-height:194px!important"><span class="text-lime font-black text-3xl">02</span><h3 class="mt-14 text-xl font-black">تنفيذ أسرع</h3><p class="mt-3 text-white/55 leading-7">قرارات مركزة ودورات قصيرة تحافظ على الزخم.</p><span class="proof-meta">MOMENTUM / 02</span></article><article class="proof-card p-6 md:p-7 bg-ink" style="height:194px!important;min-height:194px!important"><span class="text-lime font-black text-3xl">03</span><h3 class="mt-14 text-xl font-black">جودة دقيقة</h3><p class="mt-3 text-white/55 leading-7">تفاصيل محسوبة تجعل التجربة أسهل وأقوى.</p><span class="proof-meta">PRECISION / 03</span></article><article class="proof-card p-6 md:p-7 bg-ink" style="height:194px!important;min-height:194px!important"><span class="text-lime font-black text-3xl">04</span><h3 class="mt-14 text-xl font-black">متابعة مستمرة</h3><p class="mt-3 text-white/55 leading-7">نبقى معك حتى بعد الإطلاق والنمو الأول.</p><span class="proof-meta">GROWTH / 04</span></article></div></div></section>
+
+    <section id="orbit" class="px-5 md:px-10"><div class="max-w-7xl mx-auto w-full orbit-stage"><span class="orbit-kicker"><span class="arabic-copy">الفكرة تتحرك. الأثر يبقى.</span><span class="english-copy">Ideas move. Impact remains.</span></span><span class="orbit-word left" data-orbit-left>build</span><span class="orbit-word right" data-orbit-right>design</span><div class="orbit-glow"></div><svg class="orbit-network" viewBox="0 0 800 500" aria-hidden="true"><g class="network-lines" fill="none"><path d="M78 184 L164 98 L278 142 L382 66 L510 128 L688 92"/><path d="M78 184 L142 318 L266 278 L382 66"/><path d="M142 318 L226 414 L386 366 L510 128"/><path d="M266 278 L386 366 L572 326 L688 92"/><path d="M510 128 L572 326"/><path d="M164 98 L118 42 L54 76"/><path d="M278 142 L324 216 L266 278"/><path d="M382 66 L438 18 L510 128"/><path d="M510 128 L606 194 L688 92"/><path d="M142 318 L92 382 L226 414"/><path d="M266 278 L332 312 L386 366"/><path d="M386 366 L470 438 L572 326"/><path d="M572 326 L646 388 L726 344"/><path d="M18 120 L54 76 L118 42"/><path d="M18 120 L78 184 L142 318"/><path d="M118 42 L164 98 L214 170"/><path d="M214 170 L278 142 L324 216"/><path d="M324 216 L382 66 L438 18"/><path d="M438 18 L510 128 L606 194"/><path d="M606 194 L688 92 L782 132"/><path d="M142 318 L92 382 L42 438"/><path d="M226 414 L298 462 L386 366"/><path d="M386 366 L470 438 L548 470"/><path d="M572 326 L646 388 L726 344 L782 390"/><path d="M266 278 L350 252 L420 252 L474 292"/></g><g class="network-cells"><circle cx="78" cy="184" r="7"/><circle cx="164" cy="98" r="5"/><circle cx="278" cy="142" r="8"/><circle cx="382" cy="66" r="6"/><circle cx="510" cy="128" r="7"/><circle cx="688" cy="92" r="5"/><circle cx="142" cy="318" r="5"/><circle cx="266" cy="278" r="7"/><circle cx="226" cy="414" r="5"/><circle cx="386" cy="366" r="8"/><circle cx="572" cy="326" r="6"/><circle cx="118" cy="42" r="4"/><circle cx="54" cy="76" r="6"/><circle cx="324" cy="216" r="4"/><circle cx="438" cy="18" r="5"/><circle cx="606" cy="194" r="4"/><circle cx="92" cy="382" r="5"/><circle cx="332" cy="312" r="4"/><circle cx="470" cy="438" r="5"/><circle cx="646" cy="388" r="4"/><circle cx="726" cy="344" r="6"/><circle cx="18" cy="120" r="5"/><circle cx="782" cy="132" r="5"/><circle cx="42" cy="438" r="5"/><circle cx="782" cy="390" r="5"/><circle cx="350" cy="252" r="4"/><circle cx="548" cy="470" r="5"/><circle cx="214" cy="170" r="3.5"/><circle cx="232" cy="222" r="4"/><circle cx="350" cy="146" r="3.5"/><circle cx="420" cy="252" r="4"/><circle cx="474" cy="292" r="3.5"/><circle cx="548" cy="242" r="4"/><circle cx="604" cy="274" r="3.5"/><circle cx="298" cy="352" r="4"/></g></svg><div class="orbit-core"><div class="orbit-depth"></div><img class="orbit-logo" src="/assets/brand/kg-transparent.png" alt="KeenGuild" /></div><div class="orbit-keywords" aria-label="Programming and design keywords"><span>CODE</span><span>UX / UI</span><span>BUILD</span><span>BRAND</span><span>WEB</span><span>IDEAS</span></div><span class="orbit-caption"><span class="arabic-copy type-line" data-text="حرّك. اكتشف. صمّم. ابنِ. طوّر."></span><span class="english-copy type-line" data-text="Scroll. Discover. Shape. Build. Grow."></span></span></div></section>
+
+    <section id="services" class="px-5 md:px-10 py-28 bg-white"><div class="max-w-7xl mx-auto"><div class="flex flex-col md:flex-row justify-between gap-6 mb-14 reveal"><div><span class="text-sm font-bold text-[#12c4ea]">01 / ما نصنعه</span><h2 class="text-4xl md:text-5xl font-bold tracking-tight mt-4">أفكار كبيرة،<br>تنفيذ أكثر هدوءًا.</h2></div><p class="max-w-md text-black/60 text-lg leading-8">نحذف الضوضاء من الطريق حتى يظهر جوهر المنتج، ويشعر العميل بقيمته من أول لحظة.</p></div><div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4"> <article class="reveal bg-ink text-white rounded-3xl p-7 min-h-[300px] flex flex-col justify-between"><div class="text-4xl text-[#12c4ea]" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.4 5.6L20 11l-5.6 2.4L12 19l-2.4-5.6L4 11l5.6-2.4L12 3Z"/><path d="m19 3 .7 1.3L21 5l-1.3.7L19 7l-.7-1.3L17 5l1.3-.7L19 3Z"/></svg></div><div><h3 class="text-2xl font-black">منتجات SaaS</h3><p class="mt-3 text-white/60 leading-7">نبني أدوات اشتراك تستمر في التطور مع عملائك.</p></div></article><article class="reveal bg-mist rounded-3xl p-7 min-h-[300px] flex flex-col justify-between"><div class="text-4xl text-[#12c4ea]" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="m8 10 3 3 5-5"/></svg></div><div><h3 class="text-2xl font-black">مواقع تجارية</h3><p class="mt-3 text-black/55 leading-7">موقع يشرح قيمتك بسرعة ويحوّل الزيارة إلى فرصة.</p></div></article><article class="reveal bg-[#d5ddff] rounded-3xl p-7 min-h-[300px] flex flex-col justify-between"><div class="text-4xl text-[#12c4ea]" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 18 4M7 4h-3v3M17 20h3v-3"/><path d="M8 20h8M4 16V8"/></svg></div><div><h3 class="text-2xl font-black">تصميم UX/UI</h3><p class="mt-3 text-black/55 leading-7">تجارب واضحة، جميلة، وسهلة الاستخدام من أول لمسة.</p></div></article><article class="reveal bg-lime rounded-3xl p-7 min-h-[300px] flex flex-col justify-between"><div class="text-4xl text-[#12c4ea]" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="7"/><path d="m9 12 2 2 4-4"/></svg></div><div><h3 class="text-2xl font-black">حلول مخصصة</h3><p class="mt-3 text-black/65 leading-7">نربط عملياتك ونقلل الخطوات التي تعطل فريقك.</p></div></article></div></div></section>
 
 
     <section id="demos" class="px-5 md:px-10 py-28 bg-ink text-white noise"><div class="max-w-7xl mx-auto"><div class="flex flex-col md:flex-row items-start justify-between gap-6 mb-14 reveal"><div><span class="text-sm font-black text-lime">02 / جرّب بنفسك</span><h2 class="text-4xl md:text-6xl font-black tracking-tight mt-4">منتجات حقيقية.<br><span class="text-white/40">تجربة سريعة.</span></h2></div><p class="max-w-md text-white/55 text-lg leading-8">نماذج مصغرة من النوع الذي نبنيه كل يوم. افتح أي تجربة وخد جولة سريعة.</p></div><div class="grid lg:grid-cols-3 gap-5"><article class="reveal bg-white/8 border border-white/10 rounded-3xl p-4"><div class="bg-[#c9d2ff] rounded-2xl h-56 p-5 text-ink"><div class="flex justify-between"><b>Flowboard</b><span class="text-xs bg-white rounded-full px-2 py-1">فريق المنتج</span></div><div class="mt-7 grid grid-cols-3 gap-2"><div class="bg-white rounded-xl p-2 h-24"><small>المهام</small><b class="block text-2xl mt-3">36</b></div><div class="bg-white rounded-xl p-2 h-24"><small>قيد العمل</small><b class="block text-2xl mt-3">12</b></div><div class="bg-white rounded-xl p-2 h-24"><small>مكتمل</small><b class="block text-2xl mt-3">24</b></div></div></div><div class="p-3 pt-5"><div class="flex justify-between items-center"><h3 class="text-xl font-black">Flowboard</h3><button onclick="openDemo('Flowboard')" class="bg-lime text-ink px-4 py-2 rounded-xl text-sm font-bold"><span>جرب الديمو</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div><p class="text-white/55 text-sm mt-2">إدارة مشاريع للفرق التي تتحرك بسرعة.</p></div></article><article class="reveal bg-white/8 border border-white/10 rounded-3xl p-4"><div class="bg-lime rounded-2xl h-56 p-5 text-ink"><div class="flex justify-between"><b>Storefront</b><span class="text-xs bg-white rounded-full px-2 py-1">متجر إلكتروني</span></div><div class="mt-7 flex gap-3"><div class="bg-white rounded-xl h-28 flex-1 p-3"><div class="bg-[#ffe0c2] h-12 rounded-lg"></div><b class="block mt-2 text-sm">كرسي Line</b></div><div class="bg-white rounded-xl h-28 flex-1 p-3"><div class="bg-[#d5ddff] h-12 rounded-lg"></div><b class="block mt-2 text-sm">مصباح Orb</b></div></div></div><div class="p-3 pt-5"><div class="flex justify-between items-center"><h3 class="text-xl font-black">Storefront</h3><button onclick="openDemo('Storefront')" class="bg-lime text-ink px-4 py-2 rounded-xl text-sm font-bold"><span>جرب الديمو</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div><p class="text-white/55 text-sm mt-2">تجربة شراء تعطي المنتج حقه.</p></div></article><article class="reveal bg-white/8 border border-white/10 rounded-3xl p-4"><div class="bg-[#ffccb8] rounded-2xl h-56 p-5 text-ink"><div class="flex justify-between"><b>Pulse</b><span class="text-xs bg-white rounded-full px-2 py-1">تحليلات</span></div><div class="mt-8 h-28 flex items-end gap-2"><i class="bg-white w-full h-[35%] rounded-t"></i><i class="bg-white w-full h-[50%] rounded-t"></i><i class="bg-white w-full h-[43%] rounded-t"></i><i class="bg-ink w-full h-[82%] rounded-t"></i><i class="bg-ink w-full h-[68%] rounded-t"></i><i class="bg-ink w-full h-[95%] rounded-t"></i></div></div><div class="p-3 pt-5"><div class="flex justify-between items-center"><h3 class="text-xl font-black">Pulse</h3><button onclick="openDemo('Pulse')" class="bg-lime text-ink px-4 py-2 rounded-xl text-sm font-bold"><span>جرب الديمو</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div><p class="text-white/55 text-sm mt-2">كل الأرقام التي تحتاجها في شاشة واحدة.</p></div></article></div></div></section>
 
     <section id="work" class="px-5 md:px-10 py-28"><div class="max-w-7xl mx-auto"><div class="mb-14 reveal"><span class="text-sm font-black text-lime-700">03 / مختارات</span><h2 class="text-4xl md:text-6xl font-black tracking-tight mt-4">تصميمات ممكنة<br>لشغلك القادم.</h2></div><div class="grid md:grid-cols-12 gap-5"><article class="md:col-span-7 reveal bg-[#d5ddff] rounded-3xl p-5 min-h-[420px] overflow-hidden"><div class="flex justify-between font-bold"><span>01 — منصة تعليم</span><span>استراتيجية / UX</span></div><div class="bg-white rounded-2xl mt-10 p-5 rotate-[-2deg] shadow-xl max-w-lg mx-auto"><div class="flex justify-between items-center"><b class="text-xl">أكاديمية نمو</b><span class="bg-ink text-white rounded-full px-3 py-1 text-xs">ابدأ التعلم</span></div><div class="grid grid-cols-3 gap-3 mt-7"><div class="bg-mist h-28 rounded-xl"></div><div class="bg-[#ffccb8] h-28 rounded-xl"></div><div class="bg-lime h-28 rounded-xl"></div></div><div class="mt-6 h-3 rounded-full bg-mist"><div class="w-2/3 h-3 rounded-full bg-ink"></div></div></div></article><article class="md:col-span-5 reveal bg-lime rounded-3xl p-5 min-h-[420px] overflow-hidden"><div class="flex justify-between font-bold"><span>02 — متجر متخصص</span><span>UI / Development</span></div><div class="bg-ink text-white rounded-2xl mt-10 p-5 rotate-[3deg] shadow-xl max-w-sm mx-auto"><div class="text-xs text-white/50">منتجات مختارة بعناية</div><div class="text-3xl font-black mt-3">أشياء تستحق<br>مكانًا في بيتك.</div><div class="mt-8 bg-[#ffccb8] h-32 rounded-xl"></div></div></article></div></div></section>
 
-    <section id="journal" class="px-5 md:px-10 py-28 bg-white"><div class="max-w-7xl mx-auto"><div class="flex justify-between items-end mb-12 reveal"><div><span class="text-sm font-black text-lime-700">04 / من المدونة</span><h2 class="text-4xl md:text-6xl font-black mt-4">أفكار تساعدك<br>تبني بشكل أفضل.</h2></div><a href="#contact" class="hidden md:block font-bold underline underline-offset-8">كل المقالات ↗</a></div><div class="grid md:grid-cols-3 gap-5"><article class="reveal border-t-2 border-ink pt-5"><div class="flex justify-between text-xs font-bold text-black/50"><span>منتجات SaaS</span><span>6 دقائق</span></div><h3 class="text-2xl font-black leading-tight mt-7">هل تحتاج تطبيقًا مخصصًا أم منتج SaaS؟</h3><p class="text-black/55 leading-7 mt-4">طريقة عملية تساعدك تختار المسار المناسب قبل أن تكتب سطر كود واحد.</p><a href="#contact" class="inline-block mt-8 font-bold">اقرأ المقال ←</a></article><article class="reveal border-t-2 border-ink pt-5"><div class="flex justify-between text-xs font-bold text-black/50"><span>تجربة المستخدم</span><span>4 دقائق</span></div><h3 class="text-2xl font-black leading-tight mt-7">التصميم الجيد يبدأ من السؤال الصحيح.</h3><p class="text-black/55 leading-7 mt-4">لماذا نفهم المشكلة أولًا، وكيف يغير ذلك كل قرار في المنتج؟</p><a href="#contact" class="inline-block mt-8 font-bold">اقرأ المقال ←</a></article><article class="reveal border-t-2 border-ink pt-5"><div class="flex justify-between text-xs font-bold text-black/50"><span>نمو الأعمال</span><span>8 دقائق</span></div><h3 class="text-2xl font-black leading-tight mt-7">من نموذج أولي إلى أول 100 مستخدم.</h3><p class="text-black/55 leading-7 mt-4">خريطة صغيرة لتقليل المخاطرة واختبار القيمة في وقت مبكر.</p><a href="#contact" class="inline-block mt-8 font-bold">اقرأ المقال ←</a></article></div></div></section>
+    <section id="journal" class="px-5 md:px-10 py-28 bg-white"><div class="max-w-7xl mx-auto"><div class="flex justify-between items-end mb-12 reveal"><div><span class="text-sm font-black text-lime-700">04 / من المدونة</span><h2 class="text-4xl md:text-6xl font-black mt-4">أفكار تساعدك<br>تبني بشكل أفضل.</h2></div><a href="#contact" class="hidden md:block font-bold underline underline-offset-8">كل المقالات ↗</a></div><div class="grid md:grid-cols-3 gap-5"><article class="reveal border-t-2 border-ink pt-5"><img class="journal-image" src="/assets/journal/saas-vs-custom.png" alt="اختيار المسار بين منتج SaaS وتطبيق مخصص" loading="lazy"><div class="flex justify-between text-xs font-bold text-black/50"><span>منتجات SaaS</span><span>6 دقائق</span></div><h3 class="text-2xl font-black leading-tight mt-7">هل تحتاج تطبيقًا مخصصًا أم منتج SaaS؟</h3><p class="text-black/55 leading-7 mt-4">طريقة عملية تساعدك تختار المسار المناسب قبل أن تكتب سطر كود واحد.</p><a href="#contact" class="inline-block mt-8 font-bold">اقرأ المقال ←</a></article><article class="reveal border-t-2 border-ink pt-5"><img class="journal-image" src="/assets/journal/ux-question.png" alt="تصميم تجربة المستخدم يبدأ بالسؤال الصحيح" loading="lazy"><div class="flex justify-between text-xs font-bold text-black/50"><span>تجربة المستخدم</span><span>4 دقائق</span></div><h3 class="text-2xl font-black leading-tight mt-7">التصميم الجيد يبدأ من السؤال الصحيح.</h3><p class="text-black/55 leading-7 mt-4">لماذا نفهم المشكلة أولًا، وكيف يغير ذلك كل قرار في المنتج؟</p><a href="#contact" class="inline-block mt-8 font-bold">اقرأ المقال ←</a></article><article class="reveal border-t-2 border-ink pt-5"><img class="journal-image" src="/assets/journal/product-growth.png" alt="رحلة نمو المنتج من نموذج أولي إلى مستخدمين حقيقيين" loading="lazy"><div class="flex justify-between text-xs font-bold text-black/50"><span>نمو الأعمال</span><span>8 دقائق</span></div><h3 class="text-2xl font-black leading-tight mt-7">من نموذج أولي إلى أول 100 مستخدم.</h3><p class="text-black/55 leading-7 mt-4">خريطة صغيرة لتقليل المخاطرة واختبار القيمة في وقت مبكر.</p><a href="#contact" class="inline-block mt-8 font-bold">اقرأ المقال ←</a></article></div></div></section>
 
+    <section id="reel" class="reel-section" aria-label="KeenGuild video showreel"><div class="video-shell"><video id="showreelVideo" class="showreel-video" autoplay muted loop playsinline preload="auto"><source src="/assets/showreel.mp4" type="video/mp4"></video><div class="video-placeholder" aria-hidden="true"></div><div class="video-shade"></div><div class="video-copy"><span class="reel-kicker">06 / SEE THE WORK IN MOTION</span><h2>Watch ideas<br><span>become real.</span></h2><p>دقيقة واحدة تعرض كيف تتحول الفكرة إلى تجربة رقمية واضحة، جميلة، وقابلة للنمو.</p><button class="video-play" type="button" onclick="toggleShowreel()"><span class="video-play-icon">▶</span><span>شاهد الفيديو</span></button></div></div></section>
     <section id="contact" class="px-5 md:px-10 py-24 bg-lime"><div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-10 items-end"><div><span class="text-sm font-black">05 / الخطوة التالية</span><h2 class="text-5xl md:text-7xl font-black tracking-[-.05em] leading-none mt-4">عندك فكرة؟<br>خلينا نبنيها.</h2></div><div class="max-w-sm w-full"><p class="text-lg leading-8 mb-6">احكِ لنا ببساطة عن المنتج أو الموقع الذي تفكر فيه، ونرجع لك بخطوة واضحة.</p><button onclick="showToast()" class="w-full bg-ink text-white rounded-xl py-4 font-bold hover:bg-white hover:text-ink transition">ابدأ محادثة قصيرة ↗</button></div></div></section>
   </main>
-  <footer class="bg-ink text-white px-5 md:px-10 py-10"><div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-6 items-start md:items-center"><div><div class="flex items-center gap-2 font-black text-lg"><img src="/assets/brand/kg-user-black.png" alt="K G Neural Tech" class="w-11 h-11 rounded-xl bg-black p-1 object-contain" />KeenGuild</div><p class="text-white/45 text-sm mt-3">نبني الوضوح، ثم نبني المنتج.</p></div><div class="text-white/45 text-sm">© 2026 KeenGuild · القاهرة</div></div></footer>
+  <footer class="bg-ink text-white px-5 md:px-10 py-7"><div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-5 items-start md:items-center"><div><div class="flex items-center gap-2 font-black text-lg"><img src="/assets/brand/favicon-new.png" alt="KeenGuild logo" class="w-11 h-11 rounded-xl bg-transparent p-0 object-contain" />KeenGuild</div><p class="text-white/45 text-sm mt-2">نبني الوضوح، ثم نبني المنتج.</p></div><nav class="social-links" aria-label="روابط التواصل الاجتماعي"><a class="social-link" href="https://www.linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn"><span>in</span></a><a class="social-link" href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><span>◎</span></a><a class="social-link" href="https://www.facebook.com" target="_blank" rel="noopener" aria-label="Facebook"><span>f</span></a><a class="social-link" href="https://x.com" target="_blank" rel="noopener" aria-label="X"><span>𝕏</span></a><a class="social-link" href="https://www.behance.net" target="_blank" rel="noopener" aria-label="Behance"><span>Bē</span></a><a class="social-link" href="https://dribbble.com" target="_blank" rel="noopener" aria-label="Dribbble"><span>◉</span></a><a class="social-link" href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub"><span>GH</span></a><a class="social-link" href="https://www.youtube.com" target="_blank" rel="noopener" aria-label="YouTube"><span>▶</span></a><a class="social-link" href="https://wa.me/" target="_blank" rel="noopener" aria-label="WhatsApp"><span>WA</span></a><a class="social-link" href="mailto:hello@keenguild.com" aria-label="Email"><span>✉</span></a></nav><div class="text-white/45 text-sm">© 2026 KeenGuild · القاهرة</div></div></footer>
   <div id="modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-5 bg-ink/70 backdrop-blur-sm"><div class="bg-white rounded-3xl p-7 max-w-md w-full"><div class="flex justify-between items-start"><div><span class="pill">نسخة تجريبية</span><h3 id="modalTitle" class="text-3xl font-black mt-5"></h3></div><button onclick="closeDemo()" class="text-2xl">×</button></div><p class="text-black/60 leading-8 mt-5">هذه تجربة تفاعلية مختصرة. في النسخة الكاملة نربط البيانات ونبني كل التدفقات التي يحتاجها فريقك.</p><div class="bg-mist rounded-2xl p-5 mt-6"><div class="flex justify-between"><b>حالة المنتج</b><span class="text-green-600 font-bold">يعمل الآن</span></div><div class="h-2 bg-white rounded-full mt-5"><div class="h-2 bg-lime rounded-full w-3/4"></div></div></div><button onclick="closeDemo()" class="w-full bg-ink text-white rounded-xl py-3 mt-6 font-bold">رجوع للتجارب</button></div></div>
   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 hidden bg-ink text-white px-5 py-3 rounded-xl shadow-xl text-sm">وصلت — سنحوّلها لخطوة واضحة قريبًا.</div>
   <script>
-    const observer = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('show')), {threshold:.12}); document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));
+    const translations = {
+      'استكشف':'Explore','ابدأ مشروعك ↗':'Start a project ↗','استوديو منتجات رقمية':'Digital product studio','متاح لمشاريع جديدة':'Available for new projects','استوديو رقمي من القاهرة إلى العالم':'Digital studio from Cairo to the world','لماذا KeenGuild؟':'Why KeenGuild?','من الفكرة':'From idea','إلى أثر حقيقي.':'To real impact.','وضوح من البداية':'Clarity from the start','تنفيذ أسرع':'Faster execution','جودة دقيقة':'Precise quality','متابعة مستمرة':'Ongoing support','التميّز لا يُشرح.':'Excellence is not explained.','يُلاحظ.':'It is noticed.','نصنع منتجات رقمية هادئة في شكلها، دقيقة في تفاصيلها، وواضحة في أثرها.':'We craft digital products that are calm in form, precise in detail, and clear in impact.','شاهد ما نبنيه ↓':'See what we build ↓','تصفّح أعمالنا':'Browse our work','منتج أطلقناه':'products launched','قطاعات نفهمها':'industries we understand','متابعة النمو':'Growth tracking','مباشر الآن':'Live now','الإيرادات':'Revenue','الاشتراكات':'Subscriptions','انطباع أول':'First impression','واضح':'Clear','الوضوح قوة ✦':'Clarity is power ✦','التفاصيل تصنع الفرق ✦':'Details make the difference ✦','تجارب تستحق التذكر ✦':'Experiences worth remembering ✦','منتجات تنمو بثقة ✦':'Products that grow with confidence ✦','01 / ما نصنعه':'01 / What we make','أفكار كبيرة،':'Big ideas,','تنفيذ أكثر هدوءًا.':'Quieter execution.','نحذف الضوضاء من الطريق حتى يظهر جوهر المنتج، ويشعر العميل بقيمته من أول لحظة.':'We remove the noise so the value of your product is clear from the very first moment.','منتجات SaaS':'SaaS products','نبني أدوات اشتراك تستمر في التطور مع عملائك.':'We build subscription tools that keep evolving with your customers.','مواقع تجارية':'Commercial websites','موقع يشرح قيمتك بسرعة ويحوّل الزيارة إلى فرصة.':'A website that explains your value fast and turns visits into opportunities.','تصميم UX/UI':'UX/UI design','تجارب واضحة، جميلة، وسهلة الاستخدام من أول لمسة.':'Clear, beautiful experiences that feel easy from the first touch.','حلول مخصصة':'Custom solutions','نربط عملياتك ونقلل الخطوات التي تعطل فريقك.':'We connect your operations and remove the steps slowing your team down.','02 / جرّب بنفسك':'02 / Try it yourself','منتجات حقيقية.':'Real products.','تجربة سريعة.':'A quick experience.','نماذج مصغرة من النوع الذي نبنيه كل يوم. افتح أي تجربة وخد جولة سريعة.':'Small examples of the products we build every day. Open one and take a quick tour.','جرب الديمو':'Try the demo','03 / مختارات':'03 / Selected work','تصميمات ممكنة':'Possible designs','لشغلك القادم.':'For your next project.','04 / من المدونة':'04 / From the journal','أفكار تساعدك':'Ideas to help you','تبني بشكل أفضل.':'Build better.','05 / الخطوة التالية':'05 / The next step','عندك فكرة؟':'Have an idea?','خلينا نبنيها.':'Let’s build it.','احكِ لنا ببساطة عن المنتج أو الموقع الذي تفكر فيه، ونرجع لك بخطوة واضحة.':'Tell us about the product or website on your mind, and we’ll come back with a clear next step.','ابدأ محادثة قصيرة ↗':'Start a short conversation ↗','وصلت — سنحوّلها لخطوة واضحة قريبًا.':'Got it — we’ll turn it into a clear next step soon.','الخدمات':'Services','التجارب':'Experiments','أعمالنا':'Our work','الأفكار':'Ideas','المختارات':'Selected work','المدونة':'Journal','الخطوة التالية':'Next step','البداية':'Start'
+    };
+    function setLanguage(lang) { document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'; document.body.classList.toggle('english', lang === 'en'); const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode); nodes.forEach(node => { if (node.parentElement.closest('script,style')) return; let value=node.nodeValue; Object.entries(translations).sort((a,b)=>b[0].length-a[0].length).forEach(([ar,en]) => { value=value.split(lang === 'en' ? ar : en).join(lang === 'en' ? en : ar); }); node.nodeValue=value; }); document.getElementById('languageButton').textContent = lang === 'ar' ? 'EN' : 'AR'; document.getElementById('menuButton').setAttribute('aria-label', lang === 'ar' ? 'استكشف' : 'Explore'); document.title = lang === 'ar' ? 'KeenGuild — نبني المنتجات التي تكبر معك' : 'KeenGuild — We build products that grow with you'; localStorage.setItem('keenguild-language',lang); }
+    const typeLines = document.querySelectorAll('.type-line'); function runTypewriter(){ typeLines.forEach(line => { if(line._typeTimer) clearTimeout(line._typeTimer); const text=line.dataset.text || ''; line.textContent=''; let i=0; const tick=()=>{ if(i<text.length){ line.textContent += text[i++]; line._typeTimer=setTimeout(tick, 85); } }; tick(); }); } setLanguage(localStorage.getItem('keenguild-language') || 'ar'); runTypewriter(); if (location.hash === '#proof') { history.replaceState(null, '', '#top'); window.scrollTo(0, 0); }
+    const orbitSection = document.getElementById('orbit'), orbitLeft = document.querySelector('[data-orbit-left]'), orbitRight = document.querySelector('[data-orbit-right]');
+    const updateOrbit = () => { if (!orbitSection) return; const rect = orbitSection.getBoundingClientRect(), progress = Math.max(-1, Math.min(1, (window.innerHeight / 2 - (rect.top + rect.height / 2)) / (window.innerHeight + rect.height / 2))); const spread = 10 + Math.abs(progress) * 10, lift = progress * -4, tilt = progress * 3; orbitLeft.style.transform = `translateX(${-spread}vw) translateY(${lift}px) rotate(${-tilt}deg) scale(${1 + Math.abs(progress) * .08})`; orbitRight.style.transform = `translateX(${spread}vw) translateY(${-lift}px) rotate(${tilt}deg) scale(${1 + Math.abs(progress) * .08})`; orbitLeft.style.opacity = orbitRight.style.opacity = String(1 - Math.abs(progress) * .25); };
+    window.addEventListener('scroll', updateOrbit, {passive:true}); updateOrbit(); const orbitCore=document.querySelector('.orbit-core'), orbitNetwork=document.querySelector('.orbit-network'); orbitSection.addEventListener('pointermove', e => { const r=orbitSection.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5; orbitCore.style.transform='rotateX('+(y*-180)+'deg) rotateY('+(x*360)+'deg)'; if(orbitNetwork) orbitNetwork.style.transform='translate('+(x*18)+'px,'+(y*18)+'px) scale(1.04)'; }); orbitSection.addEventListener('pointerleave', () => { orbitCore.style.transform=''; if(orbitNetwork) orbitNetwork.style.transform=''; }); new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ orbitSection.classList.add('orbit-active'); runTypewriter(); } else { orbitSection.classList.remove('orbit-active'); } }), {threshold:.35}).observe(orbitSection); const navHeader=document.querySelector('header'); new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting && navHeader) navHeader.classList.toggle('section-orbit', e.target.id === 'orbit'); }), {threshold:.55}).observe(document.getElementById('orbit')); const syncNavTheme=()=>{ if(!navHeader) return; const current=[...document.querySelectorAll('main > section')].filter(s=>getComputedStyle(s).display!=='none').find(s=>{const r=s.getBoundingClientRect(); return r.top < window.innerHeight*.52 && r.bottom > window.innerHeight*.42;}); const dark=current && ['proof','orbit','demos','reel'].includes(current.id); navHeader.classList.toggle('section-orbit', current && current.id==='orbit'); navHeader.classList.toggle('section-dark', !!dark); }; window.addEventListener('scroll', syncNavTheme, {passive:true}); window.addEventListener('resize', syncNavTheme); syncNavTheme(); const scrollThemes={top:['#12c4ea','#e3f2f6'],proof:['#12c4ea','#0b2237'],orbit:['#52ddff','#07131f'],services:['#10243a','#e8f3f6'],demos:['#12c4ea','#10243a'],work:['#7188ff','#edf1ff'],journal:['#ff9b7a','#f4f8f9'],reel:['#12c4ea','#07131f'],contact:['#10243a','#dcecf2']}; const syncScrollbarTheme=()=>{ const sections=[...document.querySelectorAll('main > section')], current=sections.find(s=>{const r=s.getBoundingClientRect();return r.top<=innerHeight*.5&&r.bottom>innerHeight*.5;})||sections[0], theme=scrollThemes[current.id]||scrollThemes.top; document.documentElement.style.setProperty('--scroll-color',theme[0]); document.documentElement.style.setProperty('--scroll-track',theme[1]); }; window.addEventListener('scroll',syncScrollbarTheme,{passive:true}); window.addEventListener('resize',syncScrollbarTheme); syncScrollbarTheme(); const orbitKeywords=document.querySelector('.orbit-keywords'); window.addEventListener('scroll', () => { if(!orbitKeywords) return; const r=orbitSection.getBoundingClientRect(), p=Math.max(-1,Math.min(1,(window.innerHeight/2-(r.top+r.height/2))/(window.innerHeight+r.height/2))); orbitKeywords.style.transform='translateX(-50%) translateY('+(p*-24)+'px) rotate('+(p*3)+'deg)'; }, {passive:true}); const observer = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('show')), {threshold:.12}); document.querySelectorAll('.reveal').forEach(e=>observer.observe(e));
+    const pageSections = [...document.querySelectorAll('main > section, footer')].filter(s => getComputedStyle(s).display !== 'none');
+    const sectionNames = ['البداية','لماذا KeenGuild؟','الخدمات','التجارب','المختارات','المدونة','الخطوة التالية'];
+    const progressFill = document.getElementById('pageProgressFill'), sectionCounter = document.getElementById('sectionCounter'), progressMeta = document.getElementById('pageProgressMeta');
+    const updateProgress = () => { const max = document.documentElement.scrollHeight - window.innerHeight; const ratio = max > 0 ? window.scrollY / max : 0; progressFill.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`; };
+    window.addEventListener('scroll', updateProgress, {passive:true}); window.addEventListener('resize', updateProgress); updateProgress();
+    let wheelLocked = false;
+    window.addEventListener('wheel', e => { if (Math.abs(e.deltaY) < 8 || wheelLocked) { if (wheelLocked) e.preventDefault(); return; } const current = pageSections.reduce((best,s,i) => Math.abs(s.getBoundingClientRect().top) < Math.abs(pageSections[best].getBoundingClientRect().top) ? i : best, 0); const next = Math.max(0, Math.min(pageSections.length - 1, current + (e.deltaY > 0 ? 1 : -1))); if (next !== current) { e.preventDefault(); wheelLocked = true; pageSections[next].scrollIntoView({behavior:'smooth', block:'start'}); setTimeout(() => wheelLocked = false, 520); } }, {passive:false});
+    const showreelVideo=document.getElementById('showreelVideo'), showreelSection=document.getElementById('reel');
+    if(showreelVideo){ showreelVideo.addEventListener('loadeddata',()=>{ showreelSection.classList.add('video-ready','video-playing'); showreelVideo.play().catch(()=>showreelSection.classList.remove('video-playing')); }); }
+    function toggleShowreel(){ if(!showreelVideo || showreelVideo.readyState===0){ const t=document.getElementById('toast'); t.textContent='أضف الفيديو باسم showreel.mp4 داخل مجلد assets'; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),3200); return; } if(showreelVideo.paused){ showreelVideo.controls=true; showreelVideo.play(); showreelSection.classList.add('video-playing'); } else { showreelVideo.pause(); showreelSection.classList.remove('video-playing'); } }
     function openDemo(n){ document.getElementById('modalTitle').textContent=n; const m=document.getElementById('modal'); m.classList.remove('hidden'); m.classList.add('flex'); }
     function closeDemo(){ const m=document.getElementById('modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
     function showToast(){ const t=document.getElementById('toast'); t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),3000); }
