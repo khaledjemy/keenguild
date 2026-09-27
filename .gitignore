@@ -1,0 +1,8 @@
+# Root-level local runtime files; site/ has its own Laravel ignore rules.
+/.env
+/.env.*
+!/.env.example
+/*.sqlite*
+/*.log
+/node_modules/
+/vendor/

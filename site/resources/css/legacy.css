@@ -1,0 +1,11 @@
+@import "tailwindcss" source(none);
+
+@source "../../../dist/index.html";
+@source "../views/home";
+
+@theme {
+    --color-ink: #10243a;
+    --color-lime: #12c4ea;
+    --color-mist: #f1f5f5;
+    --font-sans: "Tajawal", Arial, sans-serif;
+}
