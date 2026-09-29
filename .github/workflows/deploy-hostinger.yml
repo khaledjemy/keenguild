@@ -1,0 +1,100 @@
+name: Deploy KeenGuild to Hostinger
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'dist/**'
+      - '.github/workflows/deploy-hostinger.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keenguild-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: vars.HOSTINGER_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 30
+    env:
+      DEPLOY_ROOT: /home/u863761585/domains/keenguild.com
+      SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+      SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+      SSH_PORT: ${{ secrets.HOSTINGER_SSH_PORT }}
+      SSH_KEY: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
+      SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Build public assets
+        working-directory: site
+        run: |
+          npm ci
+          npm run build
+
+      - name: Validate deployment credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$SSH_HOST" =~ ^[A-Za-z0-9.-]+$ ]] || { echo 'Invalid SSH host'; exit 1; }
+          [[ "$SSH_USER" =~ ^[A-Za-z0-9_-]+$ ]] || { echo 'Invalid SSH user'; exit 1; }
+          [[ "$SSH_PORT" =~ ^[0-9]+$ ]] || { echo 'Invalid SSH port'; exit 1; }
+          [[ -n "$SSH_KEY" && -n "$SSH_KNOWN_HOSTS" ]] || { echo 'Missing SSH secret'; exit 1; }
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$SSH_KEY" > "$HOME/.ssh/hostinger_deploy"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/hostinger_deploy" "$HOME/.ssh/known_hosts"
+          ssh-keygen -y -f "$HOME/.ssh/hostinger_deploy" > /dev/null
+
+      - name: Check remote layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -p "$SSH_PORT" -i "$HOME/.ssh/hostinger_deploy" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
+            "test -f '$DEPLOY_ROOT/site/.env' && test -f '$DEPLOY_ROOT/public_html/index.php' && test -d '$DEPLOY_ROOT/dist' && test -d '$DEPLOY_ROOT/site'"
+
+      - name: Upload source and built assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          remote="$SSH_USER@$SSH_HOST"
+          transport="ssh -p $SSH_PORT -i $HOME/.ssh/hostinger_deploy -o StrictHostKeyChecking=yes"
+          # No --delete: preserve production files not tracked in Git, especially uploads and secrets.
+          rsync -az --delay-updates -e "$transport" \
+            --exclude='/.env' --exclude='/.env.*' --exclude='/storage/' \
+            --exclude='/vendor/' --exclude='/node_modules/' --exclude='/public/' \
+            --exclude='/database/*.sqlite*' --exclude='/tests/' \
+            site/ "$remote:$DEPLOY_ROOT/site/"
+          rsync -az --delay-updates -e "$transport" dist/ "$remote:$DEPLOY_ROOT/dist/"
+          rsync -az --delay-updates -e "$transport" dist/assets/ "$remote:$DEPLOY_ROOT/public_html/assets/"
+          rsync -az --delay-updates -e "$transport" dist/agent-api-bridge.js "$remote:$DEPLOY_ROOT/public_html/agent-api-bridge.js"
+          rsync -az --delay-updates -e "$transport" --exclude='/storage' --exclude='/index.php' \
+            site/public/ "$remote:$DEPLOY_ROOT/public_html/"
+          rsync -az --delay-updates -e "$transport" \
+            site/deploy/hostinger-public/index.php "$remote:$DEPLOY_ROOT/public_html/index.php"
+
+      - name: Install dependencies and activate
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -p "$SSH_PORT" -i "$HOME/.ssh/hostinger_deploy" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
+            "cd '$DEPLOY_ROOT/site' && composer2 install --no-dev --prefer-dist --no-interaction --optimize-autoloader && php artisan migrate --force && rsync -a --exclude=/storage --exclude=/index.php public/ ../public_html/ && php artisan optimize:clear && php artisan optimize && php artisan keenguild:launch-check"
+
+      - name: Check public homepage
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 20 https://keenguild.com/ -o /dev/null
+          curl --fail --silent --show-error --location --max-time 20 https://keenguild.com/en -o /dev/null
