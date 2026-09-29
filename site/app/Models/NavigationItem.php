@@ -27,6 +27,14 @@ class NavigationItem extends Model
 
     public function publicUrl(string $locale = 'ar', bool $onHome = false): ?string
     {
+        if (str_starts_with($this->target, 'page:')) {
+            $slug = substr($this->target, 5);
+
+            return CustomPage::query()->publiclyVisible()->where('slug', $slug)->exists()
+                ? route('custom-page', ['locale' => $locale, 'slug' => $slug], false)
+                : null;
+        }
+
         if (! array_key_exists($this->target, self::TARGETS)) {
             return null;
         }

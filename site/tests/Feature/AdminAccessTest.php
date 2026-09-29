@@ -2,6 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Filament\AdminNavigationGroups;
+use App\Filament\Pages\SiteSettings;
+use App\Filament\Pages\PagesHub;
+use App\Filament\Resources\CustomPages\Pages\CreateCustomPage;
 use App\Filament\Resources\ArticleCategories\Pages\CreateArticleCategory;
 use App\Filament\Resources\Articles\Pages\CreateArticle;
 use App\Filament\Resources\ContactChannels\Pages\CreateContactChannel;
@@ -26,9 +30,9 @@ use App\Filament\Resources\SeoSettings\Pages\CreateSeoSetting;
 use App\Filament\Resources\Services\Pages\CreateService;
 use App\Filament\Widgets\CatalogOverview;
 use App\Filament\Widgets\HomepageManagement;
-use App\Filament\Widgets\PricingManagement;
 use App\Models\ArticleCategory;
 use App\Models\ContactChannel;
+use App\Models\CustomPage;
 use App\Models\HomepageContent;
 use App\Models\HomepageHero;
 use App\Models\HomepageVideo;
@@ -89,14 +93,14 @@ class AdminAccessTest extends TestCase
         $this->actingAs($admin)->get('/admin/homepage-heroes')->assertOk();
         $this->actingAs($admin)->get('/admin/homepage-contents')->assertOk();
         $this->actingAs($admin)->get('/admin/navigation-items')->assertOk()->assertSee('/admin/navigation-items/create', false);
-        $this->actingAs($admin)->get('/admin/seo-settings')->assertOk()->assertSee('/admin/seo-settings/create', false);
+        $this->actingAs($admin)->get('/admin/seo-settings')->assertRedirect(SiteSettings::getUrl());
         $this->actingAs($admin)->get('/admin/page-contents')->assertOk()->assertSee('/admin/page-contents/create', false);
         $this->actingAs($admin)->get('/admin/homepage-videos')->assertOk()->assertSee('/admin/homepage-videos/create', false);
-        $this->actingAs($admin)->get('/admin/inquiry-settings')->assertOk()->assertSee('/admin/inquiry-settings/create', false);
+        $this->actingAs($admin)->get('/admin/inquiry-settings')->assertRedirect(SiteSettings::getUrl());
         $this->actingAs($admin)->get('/admin/article-categories')->assertOk()->assertSee('/admin/article-categories/create', false);
         SeoSetting::create(['allow_indexing' => true]);
         HomepageVideo::create(['published' => false]);
-        $this->get('/admin/seo-settings')->assertOk()->assertDontSee('/admin/seo-settings/create', false);
+        $this->get('/admin/seo-settings')->assertRedirect(SiteSettings::getUrl());
         $this->get('/admin/homepage-videos')->assertOk()->assertDontSee('/admin/homepage-videos/create', false);
         $this->actingAs($admin)->get('/admin/pricing-settings')->assertOk();
         $this->actingAs($admin)->get('/admin/quote-requests')->assertOk();
@@ -109,18 +113,49 @@ class AdminAccessTest extends TestCase
         $this->actingAs($admin)->get('/admin/contact-channels/create')->assertOk();
     }
 
+    public function test_admin_sidebar_groups_related_sections_in_a_stable_order(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $groups = Filament::getPanel('admin')->getNavigationGroups();
+
+        $this->assertSame([
+            AdminNavigationGroups::CONTENT,
+            AdminNavigationGroups::PRICING,
+            AdminNavigationGroups::CONTACT,
+            AdminNavigationGroups::SETTINGS,
+        ], array_map(fn ($group): ?string => $group->getLabel(), $groups));
+
+        $this->actingAs($admin)->get('/admin')->assertOk()
+            ->assertSeeInOrder([
+                'الصفحات',
+                'المحتوى والأعمال', 'الخدمات', 'المشاريع', 'المقالات', 'تصنيفات المقالات', 'الأسئلة الشائعة',
+                'الأسعار', 'الباقات', 'إضافات الأسعار', 'إعدادات التسعير',
+                'التواصل والطلبات', 'طلبات عرض السعر', 'قنوات التواصل',
+                'إعدادات الموقع', 'المنيو والفوتر',
+            ]);
+
+        $this->get('/admin/legal-pages')->assertOk()->assertSee('الخصوصية والشروط');
+    }
+
     public function test_admin_can_manage_quote_intake_from_dashboard_without_publishing_social_links(): void
     {
         $admin = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($admin)->get('/admin')->assertOk()
+            ->assertSee('/admin/site-settings', false);
         Livewire::actingAs($admin)->test(CreateInquirySetting::class)
             ->fillForm(['intake_requested' => true])->call('create')->assertHasNoFormErrors();
 
         $this->assertTrue(InquirySetting::query()->firstOrFail()->intake_requested);
-        $this->get('/admin/inquiry-settings')->assertOk()
-            ->assertDontSee('/admin/inquiry-settings/create', false)
-            ->assertSee('/admin/inquiry-settings/1/edit', false);
+        $this->get('/admin/inquiry-settings')->assertRedirect(SiteSettings::getUrl());
+        $this->assertSame(
+            \App\Filament\Resources\InquirySettings\InquirySettingResource::getUrl('edit', ['record' => 1]),
+            \App\Filament\Resources\InquirySettings\InquirySettingResource::getNavigationUrl(),
+        );
         $this->get('/ar/request-quote')->assertOk()->assertDontSee('name="email"', false);
-        Livewire::actingAs($admin)->test(HomepageManagement::class)->assertSee('بانتظار سياسة الخصوصية');
+        Livewire::actingAs($admin)->test(HomepageManagement::class)
+            ->assertSee('بانتظار سياسة الخصوصية')
+            ->assertSee('استكمال الخصوصية والشروط')
+            ->assertDontSee('استقبال الطلبات متوقف');
 
         LegalPage::create([
             'type' => 'privacy', 'title_ar' => 'سياسة الخصوصية', 'title_en' => 'Privacy policy',
@@ -129,6 +164,92 @@ class AdminAccessTest extends TestCase
         $this->get('/ar/request-quote')->assertOk()->assertSee('name="email"', false);
         Livewire::actingAs($admin)->test(HomepageManagement::class)->assertSee('النموذج نشط');
         $this->get('/admin')->assertOk();
+    }
+
+    public function test_site_settings_are_one_editable_page_without_duplicate_records(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $this->actingAs($admin)->get('/admin/site-settings')->assertOk()
+            ->assertSee('استقبال طلبات المشاريع')
+            ->assertSee('السماح بفهرسة الموقع')
+            ->assertSee('حفظ الإعدادات');
+
+        Livewire::actingAs($admin)->test(SiteSettings::class)
+            ->fillForm(['intake_requested' => true, 'allow_indexing' => false, 'home_title_ar' => 'عنوان الموقع'])
+            ->call('save')->assertHasNoFormErrors();
+        $this->assertSame(1, InquirySetting::query()->count());
+        $this->assertSame(1, SeoSetting::query()->count());
+        $this->assertFalse(SeoSetting::query()->firstOrFail()->allow_indexing);
+
+        Livewire::actingAs($admin)->test(SiteSettings::class)
+            ->fillForm(['intake_requested' => false, 'allow_indexing' => true])
+            ->call('save')->assertHasNoFormErrors();
+        $this->assertSame(1, InquirySetting::query()->count());
+        $this->assertSame(1, SeoSetting::query()->count());
+        $this->assertFalse(InquirySetting::query()->firstOrFail()->intake_requested);
+    }
+
+    public function test_pages_hub_lists_existing_pages_and_can_create_a_bilingual_page(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+
+        $this->actingAs($admin)->get(PagesHub::getUrl())->assertOk()
+            ->assertSee('الصفحات الأساسية والقانونية')
+            ->assertSee('مقدمة الرئيسية')
+            ->assertSee('فيديو الرئيسية')
+            ->assertSee('سياسة الخصوصية')
+            ->assertSee('طلب عرض سعر')
+            ->assertSee('تخصيص العنوان والمقدمة')
+            ->assertSee('إعداد استقبال الطلبات')
+            ->assertSee('عرض EN')
+            ->assertSee('Flowboard')
+            ->assertSee('إضافة صفحة جديدة')
+            ->assertSee('kg-pages-intro')
+            ->assertSee('/admin/homepage-heroes/create', false)
+            ->assertSee('/admin/homepage-videos/create', false);
+
+        Livewire::actingAs($admin)->test(CreateCustomPage::class)->fillForm([
+            'slug' => 'our-story', 'title_ar' => 'قصتنا', 'title_en' => 'Our story',
+            'body_ar' => 'نص الصفحة العربية', 'body_en' => 'English page body', 'published' => false,
+        ])->call('create')->assertHasNoFormErrors();
+
+        $page = CustomPage::query()->where('slug', 'our-story')->firstOrFail();
+        $this->get('/ar/pages/our-story')->assertNotFound();
+        $this->get('/admin/preview/pages/ar/our-story')->assertOk()->assertSee('قصتنا')->assertSee('noindex,nofollow');
+        $this->get(PagesHub::getUrl())->assertOk()->assertSee('قصتنا')->assertSee('مسودة');
+
+        $page->update(['published' => true]);
+        $this->get('/ar/pages/our-story')->assertOk()->assertSee('قصتنا');
+        $this->get('/en/pages/our-story')->assertOk()->assertSee('Our story');
+        $this->get('/sitemap.xml')->assertOk()->assertSee('/ar/pages/our-story');
+
+        $item = NavigationItem::create([
+            'location' => 'footer', 'target' => 'page:our-story',
+            'label_ar' => 'قصتنا', 'label_en' => 'Our story', 'sort_order' => 99, 'published' => true,
+        ]);
+        $this->assertSame('/ar/pages/our-story', $item->publicUrl('ar'));
+        $page->update(['published' => false]);
+        $this->assertNull($item->publicUrl('ar'));
+        $this->get('/sitemap.xml')->assertOk()->assertDontSee('/ar/pages/our-story');
+    }
+
+    public function test_pages_hub_marks_incomplete_legal_copy_as_not_public(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $page = LegalPage::create([
+            'type' => 'privacy', 'title_ar' => 'الخصوصية', 'title_en' => 'Privacy',
+            'body_ar' => 'نص عربي', 'body_en' => ' ', 'published' => true,
+        ]);
+
+        $this->actingAs($admin)->get(PagesHub::getUrl())->assertOk()
+            ->assertSee('غير مكتملة')
+            ->assertSee('/admin/preview/legal/en/privacy', false);
+        $this->get('/en/legal/privacy')->assertNotFound();
+
+        $page->update(['body_en' => 'Approved privacy text']);
+        $this->get(PagesHub::getUrl())->assertOk()->assertSee('منشورة ومكتملة');
+        $this->get('/en/legal/privacy')->assertOk();
     }
 
     public function test_admin_lists_expose_edit_actions_for_managed_content(): void
@@ -153,8 +274,7 @@ class AdminAccessTest extends TestCase
             ->assertSee('/admin/homepage-contents/'.$content->id.'/edit', false);
         $this->get('/admin/homepage-videos')->assertOk()
             ->assertSee('/admin/homepage-videos/'.$video->id.'/edit', false);
-        $this->get('/admin/seo-settings')->assertOk()
-            ->assertSee('/admin/seo-settings/'.$seo->id.'/edit', false);
+        $this->get('/admin/seo-settings')->assertRedirect(SiteSettings::getUrl());
         $this->get('/admin/navigation-items')->assertOk()
             ->assertSee('/admin/navigation-items/'.$item->id.'/edit', false);
         $this->get('/admin/article-categories')->assertOk()
@@ -214,21 +334,34 @@ class AdminAccessTest extends TestCase
         $this->actingAs($admin)->get('/admin')->assertOk();
         $this->assertContains(CatalogOverview::class, Filament::getPanel('admin')->getWidgets());
         $this->assertContains(HomepageManagement::class, Filament::getPanel('admin')->getWidgets());
-        $this->assertContains(PricingManagement::class, Filament::getPanel('admin')->getWidgets());
+        $this->assertNotContains(\Filament\Widgets\AccountWidget::class, Filament::getPanel('admin')->getWidgets());
         Livewire::actingAs($admin)->test(CatalogOverview::class)
-            ->assertSee('حالة محتوى الموقع')
+            ->assertSee('مؤشرات الموقع')
             ->assertSee('خدمات منشورة')
-            ->assertSee('باقات ظاهرة')
-            ->assertSee('قنوات تواصل رسمية')
-            ->assertSee('صفحات قانونية مكتملة')
-            ->assertSee('1 / 2')
-            ->assertSee('/admin/services')
-            ->assertSee('/admin/contact-channels');
+            ->assertSee('طلبات جديدة')
+            ->assertSee('مقالات منشورة')
+            ->assertSee('/admin/services');
         Livewire::actingAs($admin)->test(HomepageManagement::class)
-            ->assertSee('معاينة الرئيسية')
-            ->assertSee('معاينة الأسعار')
-            ->assertSee('/admin/preview/pricing/ar')
-            ->assertSee('/sitemap.xml');
+            ->assertSee('معاينة الموقع')
+            ->assertSee('استكمال الخصوصية والشروط')
+            ->assertSee('1 من 2')
+            ->assertSee('أحدث طلبات المشاريع');
+    }
+
+    public function test_dashboard_highlights_new_requests_and_recent_follow_up(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $request = QuoteRequest::create([
+            'name' => 'عميل تجربة', 'email' => 'client@example.test',
+            'project_brief' => 'موقع جديد', 'status' => 'new',
+        ]);
+
+        Livewire::actingAs($admin)->test(CatalogOverview::class)
+            ->assertSee('طلبات جديدة')->assertSee('1');
+        Livewire::actingAs($admin)->test(HomepageManagement::class)
+            ->assertSee('مراجعة طلبات المشاريع الجديدة')
+            ->assertSee('عميل تجربة')
+            ->assertSee('/admin/quote-requests/'.$request->id.'/edit');
     }
 
     public function test_admin_can_save_homepage_section_copy(): void

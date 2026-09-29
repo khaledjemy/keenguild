@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Faqs;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\Faqs\Pages\CreateFaq;
 use App\Filament\Resources\Faqs\Pages\EditFaq;
 use App\Filament\Resources\Faqs\Pages\ListFaqs;
@@ -25,6 +26,10 @@ class FaqResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedQuestionMarkCircle;
 
     protected static ?string $navigationLabel = 'الأسئلة الشائعة';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::CONTENT;
+
+    protected static ?int $navigationSort = 5;
 
     public static function form(Schema $schema): Schema
     {

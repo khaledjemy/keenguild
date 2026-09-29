@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Services;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\Services\Pages\CreateService;
 use App\Filament\Resources\Services\Pages\EditService;
 use App\Filament\Resources\Services\Pages\ListServices;
@@ -19,6 +20,16 @@ class ServiceResource extends Resource
     protected static ?string $model = Service::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $navigationLabel = 'الخدمات';
+
+    protected static ?string $modelLabel = 'خدمة';
+
+    protected static ?string $pluralModelLabel = 'الخدمات';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::CONTENT;
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {

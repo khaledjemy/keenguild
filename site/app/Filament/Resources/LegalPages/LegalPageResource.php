@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LegalPages;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\LegalPages\Pages\CreateLegalPage;
 use App\Filament\Resources\LegalPages\Pages\EditLegalPage;
 use App\Filament\Resources\LegalPages\Pages\ListLegalPages;
@@ -22,11 +23,21 @@ use Filament\Tables\Table;
 
 class LegalPageResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $model = LegalPage::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
     protected static ?string $navigationLabel = 'الخصوصية والشروط';
+
+    protected static ?string $modelLabel = 'صفحة قانونية';
+
+    protected static ?string $pluralModelLabel = 'الخصوصية والشروط';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::PAGES;
+
+    protected static ?int $navigationSort = 4;
 
     public static function form(Schema $schema): Schema
     {

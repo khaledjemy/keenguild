@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ContactChannels;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\ContactChannels\Pages\CreateContactChannel;
 use App\Filament\Resources\ContactChannels\Pages\EditContactChannel;
 use App\Filament\Resources\ContactChannels\Pages\ListContactChannels;
@@ -26,6 +27,10 @@ class ContactChannelResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
 
     protected static ?string $navigationLabel = 'قنوات التواصل';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::CONTACT;
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

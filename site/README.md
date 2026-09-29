@@ -173,6 +173,26 @@ php artisan test
 php artisan keenguild:launch-check
 ```
 
+The approved local privacy and terms copy can be installed with
+`php artisan db:seed --class=ApprovedLegalPagesSeeder --force`. This seeder
+preserves previously edited legal pages. It also publishes the owner-provided
+contact address and enables quote intake only when both bilingual pages are
+complete. Review the actual production hosting location and legal text before
+deployment.
+
+To move the current edited SQLite content to a fresh MySQL installation,
+use `keenguild:content-transfer export PRIVATE_PATH` locally, upload its JSON
+outside the public web root, run `migrate --force` on the server, then use
+`keenguild:content-transfer import PRIVATE_PATH --replace-migration-defaults`
+before creating an administrator. The importer refuses populated content tables
+and excludes users, inquiries, sessions and cache. Do not run starter seeders
+after importing the edited content. See `HOSTINGER_DEPLOY.md`.
+
+Project inquiries are retained for 12 months. Configure the hosting scheduler
+to run `php artisan schedule:run` every minute; the scheduled
+`keenguild:prune-quote-requests` command deletes expired inquiries daily.
+Without this server cron job, automatic deletion will not occur.
+
 `launch-check` is read-only. A failure means required content or intake gates
 are still incomplete; do not bypass it by inventing legal text, company contact
 details, or portfolio projects. A public contact method is required by this

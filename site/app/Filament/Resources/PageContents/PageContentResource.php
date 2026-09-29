@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PageContents;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\PageContents\Pages\CreatePageContent;
 use App\Filament\Resources\PageContents\Pages\EditPageContent;
 use App\Filament\Resources\PageContents\Pages\ListPageContents;
@@ -21,11 +22,21 @@ use Filament\Tables\Table;
 
 class PageContentResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $model = PageContent::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentDuplicate;
 
     protected static ?string $navigationLabel = 'محتوى الصفحات';
+
+    protected static ?string $modelLabel = 'محتوى صفحة';
+
+    protected static ?string $pluralModelLabel = 'محتوى الصفحات';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::PAGES;
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PricingSettings;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\PricingSettings\Pages\EditPricingSetting;
 use App\Filament\Resources\PricingSettings\Pages\ListPricingSettings;
 use App\Filament\Resources\PricingSettings\Schemas\PricingSettingForm;
@@ -18,6 +19,16 @@ class PricingSettingResource extends Resource
     protected static ?string $model = PricingSetting::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $navigationLabel = 'إعدادات التسعير';
+
+    protected static ?string $modelLabel = 'إعداد تسعير';
+
+    protected static ?string $pluralModelLabel = 'إعدادات التسعير';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::PRICING;
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

@@ -64,6 +64,29 @@ class LaunchCheckTest extends TestCase
         $this->artisan('keenguild:launch-check')->assertSuccessful();
     }
 
+    public function test_launch_check_rejects_published_legal_drafts(): void
+    {
+        User::factory()->create(['is_admin' => true]);
+        $this->seed(CatalogDraftSeeder::class);
+        $this->seed(ApprovedWebPackagesSeeder::class);
+        ContactChannel::create(['platform' => 'Email', 'url' => 'team@gmail.com', 'published' => true]);
+
+        foreach (['privacy', 'terms'] as $type) {
+            LegalPage::create([
+                'type' => $type,
+                'title_ar' => $type,
+                'title_en' => $type,
+                'body_ar' => 'مسودة للمراجعة قبل النشر',
+                'body_en' => 'Draft for review before publication',
+                'published' => true,
+            ]);
+        }
+
+        $this->artisan('keenguild:launch-check')
+            ->expectsOutputToContain('The bilingual privacy page still contains draft instructions')
+            ->assertFailed();
+    }
+
     public function test_launch_check_detects_missing_public_upload_link(): void
     {
         $originalPublicPath = public_path();

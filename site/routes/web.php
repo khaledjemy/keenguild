@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\CustomPageController;
 use App\Http\Controllers\LegacyHomeController;
+use App\Http\Controllers\PublicContentSearchController;
 use App\Http\Controllers\QuoteRequestController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
@@ -11,9 +13,11 @@ Route::get('/en', fn (LegacyHomeController $legacy, \App\Services\InquiryAvailab
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 Route::get('/agent-api-bridge.js', [LegacyHomeController::class, 'agentBridge']);
+Route::get('/api/agent/search', PublicContentSearchController::class)->middleware('throttle:120,1');
 Route::get('/assets/{path}', [LegacyHomeController::class, 'asset'])->where('path', '.*');
 
 Route::prefix('admin/preview')->middleware('auth')->group(function () {
+    Route::get('/pages/{locale}/{slug}', [CustomPageController::class, 'preview'])->where(['locale' => 'ar|en'])->name('preview.custom-page');
     Route::get('/home-hero/{locale}/{hero}', [LegacyHomeController::class, 'previewHero'])->where(['locale' => 'ar|en'])->name('preview.home.hero');
     Route::get('/pricing/{locale}', [CatalogController::class, 'pricingPreview'])->where(['locale' => 'ar|en'])->name('preview.pricing');
     Route::post('/pricing/{locale}/{package}/estimate', [CatalogController::class, 'previewEstimate'])->where(['locale' => 'ar|en'])->middleware('throttle:20,1')->name('preview.pricing.estimate');
@@ -25,6 +29,7 @@ Route::prefix('admin/preview')->middleware('auth')->group(function () {
 });
 
 Route::prefix('{locale}')->where(['locale' => 'ar|en'])->group(function () {
+    Route::get('/pages/{slug}', [CustomPageController::class, 'show'])->name('custom-page');
     Route::get('/legal/{type}', [CatalogController::class, 'legal'])->where(['type' => 'privacy|terms'])->name('legal');
     Route::get('/contact', [CatalogController::class, 'contact'])->name('contact');
     Route::get('/about', [CatalogController::class, 'about'])->name('about');

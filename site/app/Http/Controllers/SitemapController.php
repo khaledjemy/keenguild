@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\CustomPage;
 use App\Models\LegalPage;
 use App\Models\Project;
 use App\Models\SeoSetting;
@@ -49,6 +50,10 @@ class SitemapController
 
             foreach (LegalPage::query()->publiclyVisible()->whereIn('type', ['privacy', 'terms'])->get() as $page) {
                 $urls[] = ['url' => route('legal', ['locale' => $locale, 'type' => $page->type]), 'updated' => $page->updated_at?->toDateString()];
+            }
+
+            foreach (CustomPage::query()->publiclyVisible()->get() as $page) {
+                $urls[] = ['url' => route('custom-page', ['locale' => $locale, 'slug' => $page->slug]), 'updated' => $page->updated_at?->toDateString()];
             }
 
         }

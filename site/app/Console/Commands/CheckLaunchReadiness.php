@@ -74,6 +74,11 @@ class CheckLaunchReadiness extends Command
             $page = LegalPage::query()->where('type', $type)->publiclyVisible()->first();
             if (! $page) {
                 $problems[] = "The bilingual {$type} page is not complete and published.";
+            } elseif (str_contains($page->body_ar, 'مسودة للمراجعة')
+                || str_contains($page->body_en, 'Draft for review')
+                || str_contains($page->body_ar, 'يجب إضافة')
+                || str_contains($page->body_en, 'Add an official contact')) {
+                $problems[] = "The bilingual {$type} page still contains draft instructions; review it before launch.";
             }
         }
 

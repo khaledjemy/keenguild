@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\Projects\Pages\CreateProject;
 use App\Filament\Resources\Projects\Pages\EditProject;
 use App\Filament\Resources\Projects\Pages\ListProjects;
@@ -19,6 +20,16 @@ class ProjectResource extends Resource
     protected static ?string $model = Project::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $navigationLabel = 'المشاريع';
+
+    protected static ?string $modelLabel = 'مشروع';
+
+    protected static ?string $pluralModelLabel = 'المشاريع';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::CONTENT;
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

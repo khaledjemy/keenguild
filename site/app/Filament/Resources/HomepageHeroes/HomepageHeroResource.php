@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\HomepageHeroes;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\HomepageHeroes\Pages\CreateHomepageHero;
 use App\Filament\Resources\HomepageHeroes\Pages\EditHomepageHero;
 use App\Filament\Resources\HomepageHeroes\Pages\ListHomepageHeroes;
@@ -21,11 +22,21 @@ use Filament\Tables\Table;
 
 class HomepageHeroResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $model = HomepageHero::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHome;
 
     protected static ?string $navigationLabel = 'مقدمة الرئيسية';
+
+    protected static ?string $modelLabel = 'مقدمة الرئيسية';
+
+    protected static ?string $pluralModelLabel = 'مقدمة الرئيسية';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::HOME;
+
+    protected static ?int $navigationSort = 1;
 
     public static function canCreate(): bool
     {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\HomepageVideos;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\HomepageVideos\Pages\CreateHomepageVideo;
 use App\Filament\Resources\HomepageVideos\Pages\EditHomepageVideo;
 use App\Filament\Resources\HomepageVideos\Pages\ListHomepageVideos;
@@ -21,11 +22,21 @@ use Filament\Tables\Table;
 
 class HomepageVideoResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $model = HomepageVideo::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedVideoCamera;
 
     protected static ?string $navigationLabel = 'فيديو الرئيسية';
+
+    protected static ?string $modelLabel = 'فيديو الرئيسية';
+
+    protected static ?string $pluralModelLabel = 'فيديو الرئيسية';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::HOME;
+
+    protected static ?int $navigationSort = 3;
 
     public static function canCreate(): bool
     {

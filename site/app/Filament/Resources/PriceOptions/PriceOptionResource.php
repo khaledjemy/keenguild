@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PriceOptions;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\PriceOptions\Pages\CreatePriceOption;
 use App\Filament\Resources\PriceOptions\Pages\EditPriceOption;
 use App\Filament\Resources\PriceOptions\Pages\ListPriceOptions;
@@ -19,6 +20,16 @@ class PriceOptionResource extends Resource
     protected static ?string $model = PriceOption::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $navigationLabel = 'إضافات الأسعار';
+
+    protected static ?string $modelLabel = 'إضافة سعر';
+
+    protected static ?string $pluralModelLabel = 'إضافات الأسعار';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::PRICING;
+
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

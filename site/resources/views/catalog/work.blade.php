@@ -22,6 +22,7 @@
         </div>
     @endif
 </div></section>
+@include('shared.external-demos', ['locale' => $locale])
 <section class="section" style="padding-top:0"><div class="shell">
     <div class="section-head"><div><span class="eyebrow">{{ $locale === 'ar' ? 'نماذج من تصميم KeenGuild' : 'KeenGuild design studies' }}</span><h2>{{ $locale === 'ar' ? 'جرّب التصورات التفاعلية' : 'Try interactive concepts' }}</h2><p>{{ $locale === 'ar' ? 'هذه تجارب واجهة افتراضية، وليست أعمال عملاء أو منتجات متاحة للشراء.' : 'These are fictional interface studies, not client projects or products for sale.' }}</p></div></div>
     <div class="grid">

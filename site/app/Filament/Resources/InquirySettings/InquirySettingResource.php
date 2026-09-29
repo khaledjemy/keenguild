@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\InquirySettings;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\InquirySettings\Pages\CreateInquirySetting;
 use App\Filament\Resources\InquirySettings\Pages\EditInquirySetting;
 use App\Filament\Resources\InquirySettings\Pages\ListInquirySettings;
@@ -18,13 +19,30 @@ use Filament\Tables\Table;
 
 class InquirySettingResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $model = InquirySetting::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
 
-    protected static ?string $navigationLabel = 'استقبال طلبات المشاريع';
+    protected static ?string $navigationLabel = 'تشغيل وإيقاف الطلبات';
 
-    protected static ?string $modelLabel = 'إعداد استقبال الطلبات';
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::SETTINGS;
+
+    protected static ?int $navigationSort = 4;
+
+    protected static ?string $modelLabel = 'تشغيل وإيقاف استقبال الطلبات';
+
+    protected static ?string $pluralModelLabel = 'تشغيل وإيقاف استقبال الطلبات';
+
+    public static function getNavigationUrl(): string
+    {
+        $setting = InquirySetting::current();
+
+        return $setting
+            ? static::getUrl('edit', ['record' => $setting])
+            : static::getUrl('create');
+    }
 
     public static function canCreate(): bool
     {
@@ -34,8 +52,8 @@ class InquirySettingResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            Toggle::make('intake_requested')->label('تفعيل نموذج طلب المشروع')->default(false)
-                ->helperText('لا يستقبل النموذج بيانات إلا بعد نشر سياسة خصوصية عربية وإنجليزية أو ضبط رابط خصوصية HTTPS صالح. الطلبات تُحفظ في قسم طلبات عروض الأسعار؛ روابط التواصل الاجتماعي اختيارية.'),
+            Toggle::make('intake_requested')->label('استقبال طلبات المشاريع عبر الموقع')->default(false)
+                ->helperText('عند التشغيل يظهر نموذج الطلب إذا توفرت سياسة خصوصية صالحة. عند الإيقاف لا تُقبل طلبات جديدة، وتبقى الطلبات السابقة محفوظة.'),
         ]);
     }
 

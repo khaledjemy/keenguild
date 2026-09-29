@@ -10,6 +10,17 @@ class Article extends Model
 {
     protected $fillable = ['article_category_id', 'slug', 'title_ar', 'title_en', 'summary_ar', 'summary_en', 'body_ar', 'body_en', 'cover_path', 'published', 'published_at'];
 
+    public function coverUrl(): ?string
+    {
+        if (! $this->cover_path) {
+            return null;
+        }
+
+        return str_starts_with($this->cover_path, 'assets/articles/')
+            ? asset($this->cover_path)
+            : asset('storage/'.$this->cover_path);
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(ArticleCategory::class, 'article_category_id');

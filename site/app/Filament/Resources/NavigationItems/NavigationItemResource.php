@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\NavigationItems;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\NavigationItems\Pages\CreateNavigationItem;
 use App\Filament\Resources\NavigationItems\Pages\EditNavigationItem;
 use App\Filament\Resources\NavigationItems\Pages\ListNavigationItems;
 use App\Models\NavigationItem;
+use App\Models\CustomPage;
 use BackedEnum;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
@@ -26,13 +28,20 @@ class NavigationItemResource extends Resource
 
     protected static ?string $navigationLabel = 'المنيو والفوتر';
 
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::SETTINGS;
+
+    protected static ?int $navigationSort = 1;
+
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
             Select::make('location')->label('مكان الظهور')->options([
                 'header' => 'الشريط العلوي', 'overlay' => 'القائمة المفتوحة', 'footer' => 'الفوتر',
             ])->required(),
-            Select::make('target')->label('الوجهة الداخلية')->options(NavigationItem::TARGETS)->required()
+            Select::make('target')->label('الوجهة الداخلية')->options(fn (): array => [
+                ...NavigationItem::TARGETS,
+                ...CustomPage::query()->orderBy('title_ar')->get()->mapWithKeys(fn (CustomPage $page): array => ['page:'.$page->slug => 'صفحة: '.$page->title_ar])->all(),
+            ])->required()
                 ->helperText('الروابط تُبنى تلقائيًا بالعربية والإنجليزية. أقسام الرئيسية تنتقل إلى موضعها داخل الصفحة.'),
             TextInput::make('label_ar')->label('العنوان بالعربية')->required()->maxLength(80),
             TextInput::make('label_en')->label('العنوان بالإنجليزية')->required()->maxLength(80),

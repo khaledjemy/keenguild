@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\HomepageContents;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\HomepageContents\Pages\EditHomepageContent;
 use App\Filament\Resources\HomepageContents\Pages\ListHomepageContents;
 use App\Models\HomepageContent;
@@ -20,11 +21,17 @@ use Filament\Tables\Table;
 
 class HomepageContentResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $model = HomepageContent::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPencilSquare;
 
     protected static ?string $navigationLabel = 'نصوص الرئيسية';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::HOME;
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $modelLabel = 'نصوص الرئيسية';
 

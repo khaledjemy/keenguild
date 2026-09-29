@@ -4,6 +4,7 @@
 @php($metaDescription = $selectedCategory ? ($locale === 'ar' ? $selectedCategory->description_ar : $selectedCategory->description_en) : null)
 
 @section('content')
+<style>.article-cover{position:relative;overflow:hidden}.article-cover>.work-cover{display:block;width:100%;margin:0}.article-cover-logo{position:absolute;inset-inline-end:14px;bottom:14px;width:44px;height:44px;object-fit:contain;padding:6px;border:1px solid rgba(119,225,255,.38);border-radius:13px;background:rgba(6,21,41,.78);box-shadow:0 8px 24px rgba(0,0,0,.25)}</style>
 <section class="hero"><div class="shell"><a class="eyebrow" href="{{ route('articles', ['locale' => $locale]) }}">{{ $locale === 'ar' ? 'المقالات' : 'Articles' }}</a><h1>{{ $selectedCategory ? ($locale === 'ar' ? $selectedCategory->name_ar : $selectedCategory->name_en) : \App\Models\PageContent::text('articles', 'heading', $locale, $locale === 'ar' ? 'أفكار تساعدك تبني بشكل أفضل.' : 'Ideas for building better.') }}</h1><p>{{ $selectedCategory ? (($locale === 'ar' ? $selectedCategory->description_ar : $selectedCategory->description_en) ?: ($locale === 'ar' ? 'مقالات هذا التصنيف.' : 'Articles in this category.')) : \App\Models\PageContent::text('articles', 'intro', $locale, $locale === 'ar' ? 'مقالات عن المواقع والتجربة والمنتجات الرقمية.' : 'Articles on websites, experience and digital products.') }}</p></div></section>
 <section class="section"><div class="shell">
     @if($categories->isNotEmpty())
@@ -20,7 +21,7 @@
         <div class="grid">
             @foreach($articles as $article)
                 <article class="card work-card">
-                    @if($article->cover_path)<img class="work-cover" src="{{ asset('storage/'.$article->cover_path) }}" alt="">@endif
+                    @if($article->coverUrl())<div class="article-cover"><img class="work-cover" src="{{ $article->coverUrl() }}" alt="" loading="lazy"><img class="article-cover-logo" src="{{ asset('assets/brand/favicon-new2.png') }}" alt="" aria-hidden="true"></div>@endif
                     <div class="copy"><span class="meta">{{ $article->published_at?->translatedFormat('d F Y') }}</span>@if($article->category)<a class="pill" href="{{ route('articles.category', ['locale' => $locale, 'slug' => $article->category->slug]) }}">{{ $locale === 'ar' ? $article->category->name_ar : $article->category->name_en }}</a>@endif<h2 style="font-size:23px"><a href="{{ route('article', ['locale' => $locale, 'slug' => $article->slug]) }}">{{ $locale === 'ar' ? $article->title_ar : $article->title_en }}</a></h2><p>{{ $locale === 'ar' ? $article->summary_ar : $article->summary_en }}</p><a class="button ghost" href="{{ route('article', ['locale' => $locale, 'slug' => $article->slug]) }}">{{ $locale === 'ar' ? 'اقرأ المقال ←' : 'Read article →' }}</a></div>
                 </article>
             @endforeach

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\QuoteRequests;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\QuoteRequests\Pages\EditQuoteRequest;
 use App\Filament\Resources\QuoteRequests\Pages\ListQuoteRequests;
 use App\Models\QuoteRequest;
@@ -22,6 +23,10 @@ class QuoteRequestResource extends Resource
     protected static ?string $model = QuoteRequest::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::CONTACT;
+
+    protected static ?int $navigationSort = 1;
 
     public static function getNavigationLabel(): string
     {

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ArticleCategories;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\ArticleCategories\Pages\CreateArticleCategory;
 use App\Filament\Resources\ArticleCategories\Pages\EditArticleCategory;
 use App\Filament\Resources\ArticleCategories\Pages\ListArticleCategories;
@@ -23,6 +24,10 @@ class ArticleCategoryResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
     protected static ?string $navigationLabel = 'تصنيفات المقالات';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::CONTENT;
+
+    protected static ?int $navigationSort = 4;
 
     public static function form(Schema $schema): Schema
     {

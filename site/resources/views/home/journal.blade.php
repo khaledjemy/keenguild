@@ -14,8 +14,11 @@
         <div class="grid md:grid-cols-3 gap-5">
             @foreach($articles as $article)
                 <article class="reveal border-t-2 border-ink pt-5">
-                    @if($article->cover_path)
-                        <img class="journal-image" src="{{ asset('storage/'.$article->cover_path) }}" alt="" loading="lazy">
+                    @if($article->coverUrl())
+                        <div style="position:relative;overflow:hidden;border-radius:13px;margin-bottom:12px">
+                            <img class="journal-image" src="{{ $article->coverUrl() }}" alt="" loading="lazy" style="margin-bottom:0">
+                            <img src="{{ asset('assets/brand/favicon-new2.png') }}" alt="" aria-hidden="true" style="position:absolute;inset-inline-end:9px;bottom:9px;width:30px;height:30px;object-fit:contain;padding:4px;border-radius:9px;background:rgba(6,21,41,.78);pointer-events:none">
+                        </div>
                     @else
                         <div class="journal-image bg-mist" style="display:flex;align-items:center;justify-content:center" aria-hidden="true"><img src="/assets/brand/favicon-new2.png" alt="" style="width:58px;height:58px;object-fit:contain"></div>
                     @endif

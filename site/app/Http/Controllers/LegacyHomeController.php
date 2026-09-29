@@ -165,8 +165,14 @@ HTML;
             if ($projects->isNotEmpty()) {
                 $work = view('home.work', compact('projects'))->render();
                 $html = preg_replace('~<section id="work"[^>]*>.*?</section>~s', $work, $html, 1);
+            } else {
+                $work = view('home.work-concepts', compact('locale'))->render();
+                $html = preg_replace('~<section id="work"[^>]*>.*?</section>~s', $work, $html, 1);
             }
         }
+        $externalDemos = view('shared.external-demos', ['locale' => 'ar', 'home' => true])->render();
+        $html = preg_replace_callback('~<section id="demos"[^>]*>.*?</section>~s',
+            fn (array $match): string => $match[0].$externalDemos, $html, 1) ?? $html;
         if (Schema::hasTable('homepage_contents') && $content = HomepageContent::query()->first()) {
             $managedCopy = $content->content ?? [];
             if (! $availability->enabled('ar') || ! $availability->enabled('en')) {

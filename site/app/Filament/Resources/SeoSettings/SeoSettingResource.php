@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SeoSettings;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\SeoSettings\Pages\CreateSeoSetting;
 use App\Filament\Resources\SeoSettings\Pages\EditSeoSetting;
 use App\Filament\Resources\SeoSettings\Pages\ListSeoSettings;
@@ -21,11 +22,17 @@ use Filament\Tables\Table;
 
 class SeoSettingResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $model = SeoSetting::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMagnifyingGlass;
 
     protected static ?string $navigationLabel = 'الفهرسة وSEO';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::SETTINGS;
+
+    protected static ?int $navigationSort = 2;
 
     public static function canCreate(): bool
     {

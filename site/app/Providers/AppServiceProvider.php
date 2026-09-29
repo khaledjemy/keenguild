@@ -11,7 +11,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $publicPath = config('keenguild.public_path');
+
+        if (is_string($publicPath) && $publicPath !== '') {
+            $this->app->usePublicPath($publicPath);
+        }
     }
 
     /**

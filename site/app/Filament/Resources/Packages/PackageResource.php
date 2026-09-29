@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Packages;
 
+use App\Filament\AdminNavigationGroups;
 use App\Filament\Resources\Packages\Pages\CreatePackage;
 use App\Filament\Resources\Packages\Pages\EditPackage;
 use App\Filament\Resources\Packages\Pages\ListPackages;
@@ -19,6 +20,16 @@ class PackageResource extends Resource
     protected static ?string $model = Package::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    protected static ?string $navigationLabel = 'الباقات';
+
+    protected static ?string $modelLabel = 'باقة';
+
+    protected static ?string $pluralModelLabel = 'الباقات';
+
+    protected static string | \UnitEnum | null $navigationGroup = AdminNavigationGroups::PRICING;
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {
