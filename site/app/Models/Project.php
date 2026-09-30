@@ -10,7 +10,7 @@ class Project extends Model
 {
     private const PUBLIC_COPY_FIELDS = ['title_ar', 'title_en', 'summary_ar', 'summary_en', 'body_ar', 'body_en'];
 
-    protected $fillable = ['slug', 'title_ar', 'title_en', 'summary_ar', 'summary_en', 'scope_ar', 'scope_en', 'body_ar', 'body_en', 'cover_path', 'gallery_paths', 'technologies', 'demo_url', 'demo_status', 'project_type', 'display_permission_confirmed', 'featured', 'featured_in_demos', 'published', 'sort_order'];
+    protected $fillable = ['slug', 'title_ar', 'title_en', 'summary_ar', 'summary_en', 'scope_ar', 'scope_en', 'body_ar', 'body_en', 'cover_path', 'illustration_path', 'gallery_paths', 'technologies', 'demo_url', 'demo_status', 'source_name', 'source_url', 'project_type', 'display_permission_confirmed', 'featured', 'featured_in_demos', 'published', 'sort_order'];
 
     protected function casts(): array
     {
@@ -26,6 +26,9 @@ class Project extends Model
 
         return $query->where(function (Builder $query): void {
             $query->where('project_type', 'concept')
+                ->orWhere(fn (Builder $query) => $query->where('project_type', 'external')
+                    ->whereNotNull('source_name')->whereRaw("TRIM(source_name) <> ''")
+                    ->where('source_url', 'like', 'https://%'))
                 ->orWhere(fn (Builder $query) => $query->where('project_type', 'client')->where('display_permission_confirmed', true));
         });
     }
@@ -33,7 +36,8 @@ class Project extends Model
     public function isPubliclyVisible(): bool
     {
         if (! $this->published || ($this->project_type === 'client' && ! $this->display_permission_confirmed)
-            || ! in_array($this->project_type, ['concept', 'client'], true)) {
+            || ! in_array($this->project_type, ['concept', 'client', 'external'], true)
+            || ($this->project_type === 'external' && (trim((string) $this->source_name) === '' || ! self::isPublicDemoUrl($this->source_url)))) {
             return false;
         }
 
@@ -49,6 +53,26 @@ class Project extends Model
     public function hasLiveDemo(): bool
     {
         return $this->demo_status === 'ready' && self::isPublicDemoUrl($this->demo_url);
+    }
+
+    public function coverUrl(): ?string
+    {
+        if ($this->cover_path) {
+            return asset('storage/'.$this->cover_path);
+        }
+
+        if (is_string($this->illustration_path)
+            && preg_match('~^assets/demos/[a-z0-9-]+\.(?:png|jpe?g|webp|avif)$~i', $this->illustration_path)) {
+            return asset($this->illustration_path);
+        }
+
+        return null;
+    }
+
+    public function publicSourceUrl(): ?string
+    {
+        return $this->project_type === 'external' && self::isPublicDemoUrl($this->source_url)
+            ? $this->source_url : null;
     }
 
     public function tourImages(): array

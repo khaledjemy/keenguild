@@ -24,6 +24,7 @@ class ProjectsTable
                 TextColumn::make('title_en')
                     ->searchable(),
                 TextColumn::make('project_type')->label('نوع العرض')->badge(),
+                TextColumn::make('source_name')->label('صاحب المثال الخارجي')->toggleable(),
                 TextColumn::make('cover_path')
                     ->searchable(),
                 TextColumn::make('demo_url')
@@ -74,6 +75,10 @@ class ProjectsTable
                 Action::make('live_demo')->label('فتح الديمو')
                     ->url(fn (Project $record): string => (string) $record->demo_url)
                     ->visible(fn (Project $record): bool => $record->hasLiveDemo())
+                    ->openUrlInNewTab(),
+                Action::make('source')->label('المصدر الأصلي')
+                    ->url(fn (Project $record): string => (string) $record->publicSourceUrl())
+                    ->visible(fn (Project $record): bool => $record->publicSourceUrl() !== null)
                     ->openUrlInNewTab(),
                 EditAction::make(),
             ])

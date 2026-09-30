@@ -38,7 +38,15 @@ class ProjectForm
                 Textarea::make('body_en')
                     ->required(fn (Get $get): bool => (bool) $get('published'))
                     ->columnSpanFull(),
-                FileUpload::make('cover_path')->label('صورة الغلاف')->image()->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/avif'])->maxSize(8192)->disk('public')->directory('projects'),
+                FileUpload::make('cover_path')->label('صورة الغلاف — ترفعها هنا لتستبدل الصورة الافتراضية')->image()->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/avif'])->maxSize(8192)->disk('public')->directory('projects'),
+                Select::make('illustration_path')->label('صورة المثال الافتراضية')->options([
+                    'assets/demos/store.png' => 'متجر',
+                    'assets/demos/restaurant.png' => 'مطعم',
+                    'assets/demos/booking.png' => 'حجوزات',
+                    'assets/demos/real-estate.png' => 'عقارات',
+                    'assets/demos/learning.png' => 'تعليم',
+                    'assets/demos/analytics.png' => 'تحليلات',
+                ])->visible(fn (Get $get): bool => $get('project_type') === 'external'),
                 FileUpload::make('gallery_paths')->label('صور المشروع')->image()->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/avif'])->maxSize(8192)->multiple()->maxFiles(10)->disk('public')->directory('projects')
                     ->columnSpanFull(),
                 TagsInput::make('technologies')->label('التقنيات')
@@ -46,7 +54,20 @@ class ProjectForm
                 Select::make('project_type')->label('نوع العرض')->options([
                     'concept' => 'نموذج تصميم أو تجربة تجريبية',
                     'client' => 'مشروع عميل منفذ بإذن العرض',
+                    'external' => 'مثال خارجي من جهة أخرى — ليس من أعمال KeenGuild',
                 ])->required()->default('concept')->live(),
+                TextInput::make('source_name')->label('اسم صاحب المثال الخارجي')
+                    ->required(fn (Get $get): bool => $get('project_type') === 'external')
+                    ->visible(fn (Get $get): bool => $get('project_type') === 'external'),
+                TextInput::make('source_url')->label('رابط المصدر الأصلي')
+                    ->url()->rule('starts_with:https://')->maxLength(2048)
+                    ->rule(fn (Get $get) => function (string $attribute, mixed $value, \Closure $fail) use ($get): void {
+                        if ($get('project_type') === 'external' && ! Project::isPublicDemoUrl(is_string($value) ? $value : null)) {
+                            $fail('استخدم رابط HTTPS عامًا حقيقيًا للمصدر الأصلي.');
+                        }
+                    })
+                    ->required(fn (Get $get): bool => $get('project_type') === 'external')
+                    ->visible(fn (Get $get): bool => $get('project_type') === 'external'),
                 Toggle::make('display_permission_confirmed')->label('تأكيد وجود إذن من العميل لعرض هذا المشروع')
                     ->helperText('لا يظهر مشروع العميل للزوار حتى لو كان منشورًا ما لم تؤكد الإذن هنا. احتفظ بإثبات الموافقة خارج الموقع.')
                     ->default(false)->visible(fn (Get $get): bool => $get('project_type') === 'client'),
@@ -70,7 +91,7 @@ class ProjectForm
                 Toggle::make('featured_in_demos')->label('عرض في قسم جرّب بنفسك بالرئيسية')
                     ->helperText('يظهر فقط إذا نُشر المشروع واكتمل وصفه وكان له رابط ديمو HTTPS جاهز. تظهر حتى ثلاث بطاقات حسب الترتيب.')
                     ->default(false),
-                Toggle::make('published')->label('طلب نشر المشروع للزوار')->helperText('مشروعات العملاء تحتاج أيضًا تأكيد إذن العرض أعلاه.')->default(false),
+                Toggle::make('published')->label('طلب نشر المشروع للزوار')->helperText('مشروعات العملاء تحتاج تأكيد إذن العرض؛ الأمثلة الخارجية تحتاج اسم ورابط المصدر.')->default(false),
                 TextInput::make('sort_order')
                     ->required()
                     ->numeric()

@@ -11,13 +11,14 @@
             @foreach($projects as $project)
                 <article class="reveal bg-white/8 border border-white/10 rounded-3xl p-4" data-home-demo-project="{{ $project->slug }}">
                     <div class="bg-white/10 rounded-2xl h-56 overflow-hidden flex items-center justify-center">
-                        @if($project->cover_path)
-                            <img src="{{ asset('storage/'.$project->cover_path) }}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+                        @if($project->coverUrl())
+                            <img src="{{ $project->coverUrl() }}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover">
                         @else
                             <img src="/assets/brand/favicon-new2.png" alt="" loading="lazy" style="width:72px;height:72px;object-fit:contain">
                         @endif
                     </div>
                     <div class="p-3 pt-5">
+                        @if($project->project_type === 'external')<p class="text-lime text-xs font-bold" data-home-ar="مثال خارجي من {{ $project->source_name }} — ليس من أعمالنا" data-home-en="Third-party example by {{ $project->source_name }} — not our work">مثال خارجي من {{ $project->source_name }} — ليس من أعمالنا</p>@endif
                         <h3 class="text-xl font-black" data-home-ar="{{ $project->title_ar }}" data-home-en="{{ $project->title_en }}">{{ $project->title_ar }}</h3>
                         <p class="text-white/55 text-sm mt-2" data-home-ar="{{ $project->summary_ar }}" data-home-en="{{ $project->summary_en }}">{{ $project->summary_ar }}</p>
                         <div class="flex flex-wrap gap-3 mt-4 text-sm font-bold">

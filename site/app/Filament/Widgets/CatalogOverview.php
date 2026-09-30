@@ -29,7 +29,7 @@ class CatalogOverview extends StatsOverviewWidget
             Stat::make('خدمات منشورة', Service::query()->where('published', true)->count())
                 ->description('ظاهرة للزوار')->url(ServiceResource::getUrl('index')),
             Stat::make('مشاريع ظاهرة', Project::query()->publiclyVisible()->count())
-                ->description('مستوفية شروط العرض')->url(ProjectResource::getUrl('index')),
+                ->description('تشمل الأمثلة الخارجية المعلّمة')->url(ProjectResource::getUrl('index')),
             Stat::make('مقالات منشورة', Article::query()->publiclyVisible()->count())
                 ->description('منشورة وتاريخها ساري')->url(ArticleResource::getUrl('index')),
         ];
