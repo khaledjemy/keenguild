@@ -161,7 +161,8 @@ HTML;
                 $demos = view('home.demos', ['projects' => $demoProjects])->render();
                 $html = preg_replace('~<section id="demos"[^>]*>.*?</section>~s', $demos, $html, 1) ?? $html;
             }
-            $projects = Project::query()->publiclyVisible()->orderByDesc('featured')->orderBy('sort_order')->limit(2)->get();
+            $projects = Project::query()->publiclyVisible()->whereNotIn('id', $demoProjects->pluck('id'))
+                ->orderByDesc('featured')->orderBy('sort_order')->limit(2)->get();
             if ($projects->isNotEmpty()) {
                 $work = view('home.work', compact('projects'))->render();
                 $html = preg_replace('~<section id="work"[^>]*>.*?</section>~s', $work, $html, 1);

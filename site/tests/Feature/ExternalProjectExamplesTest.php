@@ -34,9 +34,16 @@ class ExternalProjectExamplesTest extends TestCase
             ->assertSee('Example by:')
             ->assertSee('Vercel')
             ->assertSee('Original source');
-        $this->get('/en')->assertOk()
+        $home = $this->get('/en')->assertOk()
             ->assertSee('Third-party example')
-            ->assertDontSee('id="external-demos"', false);
+            ->assertDontSee('id="external-demos"', false)->getContent();
+        preg_match('~<section id="demos".*?</section>~s', $home, $demos);
+        preg_match('~<section id="work".*?</section>~s', $home, $work);
+        $this->assertStringContainsString('external-store', $demos[0] ?? '');
+        $this->assertStringContainsString('external-restaurant', $demos[0] ?? '');
+        $this->assertStringNotContainsString('external-store', $work[0] ?? '');
+        $this->assertStringNotContainsString('external-restaurant', $work[0] ?? '');
+        $this->assertStringContainsString('external-real-estate', $work[0] ?? '');
     }
 
     public function test_import_does_not_overwrite_admin_edits_and_admin_can_manage_an_example(): void
