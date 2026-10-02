@@ -48,6 +48,7 @@ jobs:
           cp .env.example .env
           composer install --prefer-dist --no-interaction --optimize-autoloader
           php artisan key:generate --force
+          php artisan storage:link
           php artisan test
 
   deploy:
