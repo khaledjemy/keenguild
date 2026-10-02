@@ -64,7 +64,7 @@ class SitemapController
     public function robots(): Response
     {
         if (SeoSetting::current()?->allow_indexing === false) {
-            return response("User-agent: *\nDisallow: /\n")
+            return response("User-agent: *\nDisallow: /admin/\nDisallow: /agent-api-bridge.js\n")
                 ->header('Content-Type', 'text/plain; charset=UTF-8');
         }
 

@@ -1,6 +1,6 @@
 @extends('layouts.marketing')
 
-@section('title', $concept['title'].' — '.($locale === 'ar' ? 'معاينة تصميمية' : 'Design concept'))
+@section('title', $concept['name_'.$locale].' — '.($locale === 'ar' ? 'معاينة تصميمية' : 'Design concept'))
 
 @section('content')
 <style>
@@ -8,12 +8,12 @@
 </style>
 <section class="hero"><div class="shell">
     <a class="eyebrow" href="{{ route('work', ['locale' => $locale]) }}">{{ $locale === 'ar' ? '← الأعمال والتجارب' : '← Work and demos' }}</a>
-    <h1>{{ $concept['title'] }}</h1>
-    <p>{{ $locale === 'ar' ? $concept['ar'] : $concept['en'] }}</p>
+    <h1>{{ $concept['name_'.$locale] }}</h1>
+    <p>{{ $concept['copy_'.$locale] }}</p>
     <div class="notice" style="margin-top:25px;max-width:820px">{{ $locale === 'ar' ? 'معاينة تصميمية ببيانات افتراضية فقط. ليست مشروع عميل منفذًا، ولا تحفظ البيانات أو ترسل طلبات أو تنفذ شراء.' : 'A design concept with fictional data only. This is not a completed client project; it does not save data, send orders, or process purchases.' }}</div>
 </div></section>
 <section class="section"><div class="shell"><div class="demo-surface" data-demo="{{ $concept['type'] }}">
-    <div class="demo-toolbar"><strong>{{ $concept['title'] }}</strong><span class="pill">{{ $locale === 'ar' ? 'تجربة محلية افتراضية' : 'Local fictional preview' }}</span></div>
+    <div class="demo-toolbar"><strong>{{ $concept['name_'.$locale] }}</strong><span class="pill">{{ $locale === 'ar' ? 'تجربة محلية افتراضية' : 'Local fictional preview' }}</span></div>
     @if($slug === 'flowboard')
         <div class="demo-columns">
             <div class="demo-column"><strong>{{ $locale === 'ar' ? 'قيد التخطيط' : 'Planned' }}</strong><button class="demo-task" type="button" aria-pressed="false">{{ $locale === 'ar' ? 'خريطة المنتج' : 'Product map' }}</button><button class="demo-task" type="button" aria-pressed="false">{{ $locale === 'ar' ? 'مراجعة البداية' : 'Review onboarding' }}</button></div>

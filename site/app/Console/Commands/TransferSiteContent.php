@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Project;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -167,6 +168,14 @@ class TransferSiteContent extends Command
                 }
                 foreach (self::TABLES as $table) {
                     foreach (array_chunk($payload['tables'][$table], 100) as $chunk) {
+                        if ($table === 'projects') {
+                            $chunk = array_map(function (array $row): array {
+                                $row['source_url_valid'] = ($row['project_type'] ?? null) === 'external'
+                                    && Project::isPublicDemoUrl($row['source_url'] ?? null);
+
+                                return $row;
+                            }, $chunk);
+                        }
                         DB::table($table)->insert($chunk);
                     }
                 }

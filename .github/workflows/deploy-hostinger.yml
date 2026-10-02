@@ -17,8 +17,30 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: dom, fileinfo, gd, intl, mbstring, pdo_sqlite, sqlite3, zip
+          coverage: none
+
+      - name: Install PHP dependencies and run tests
+        working-directory: site
+        run: |
+          set -euo pipefail
+          cp .env.example .env
+          composer install --prefer-dist --no-interaction --optimize-autoloader
+          php artisan key:generate --force
+          php artisan test
+
   deploy:
     if: vars.HOSTINGER_DEPLOY_ENABLED == 'true'
+    needs: test
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 30
@@ -63,7 +85,15 @@ jobs:
         run: |
           set -euo pipefail
           ssh -p "$SSH_PORT" -i "$HOME/.ssh/hostinger_deploy" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
-            "test -f '$DEPLOY_ROOT/site/.env' && test -f '$DEPLOY_ROOT/public_html/index.php' && test -d '$DEPLOY_ROOT/dist' && test -d '$DEPLOY_ROOT/site'"
+            "test -f '$DEPLOY_ROOT/site/.env' && test -f '$DEPLOY_ROOT/public_html/index.php' && test -d '$DEPLOY_ROOT/dist' && test -d '$DEPLOY_ROOT/site' && cd '$DEPLOY_ROOT/site' && php artisan db:show >/dev/null && composer2 --version >/dev/null"
+
+      - name: Put the application into maintenance mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -p "$SSH_PORT" -i "$HOME/.ssh/hostinger_deploy" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
+            "cd '$DEPLOY_ROOT/site' && php artisan down --retry=60"
+          echo 'MAINTENANCE_STARTED=true' >> "$GITHUB_ENV"
 
       - name: Upload source and built assets
         shell: bash
@@ -90,7 +120,7 @@ jobs:
         run: |
           set -euo pipefail
           ssh -p "$SSH_PORT" -i "$HOME/.ssh/hostinger_deploy" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
-            "cd '$DEPLOY_ROOT/site' && composer2 install --no-dev --prefer-dist --no-interaction --optimize-autoloader && php artisan migrate --force && rsync -a --exclude=/storage --exclude=/index.php public/ ../public_html/ && php artisan optimize:clear && php artisan optimize && php artisan keenguild:launch-check"
+            "cd '$DEPLOY_ROOT/site' && composer2 install --no-dev --prefer-dist --no-interaction --optimize-autoloader && php artisan migrate --force && rsync -a --exclude=/storage --exclude=/index.php public/ ../public_html/ && php artisan optimize:clear && php artisan optimize && php artisan keenguild:launch-check && php artisan up"
 
       - name: Check public homepage
         shell: bash
@@ -98,3 +128,11 @@ jobs:
           set -euo pipefail
           curl --fail --silent --show-error --location --max-time 20 https://keenguild.com/ -o /dev/null
           curl --fail --silent --show-error --location --max-time 20 https://keenguild.com/en -o /dev/null
+          curl --fail --silent --show-error --location --max-time 20 https://keenguild.com/en/work -o /dev/null
+          curl --fail --silent --show-error --location --max-time 20 https://keenguild.com/admin/login -o /dev/null
+          curl --fail --silent --show-error --location --max-time 20 https://keenguild.com/up -o /dev/null
+
+      - name: Report an interrupted activation
+        if: failure() && env.MAINTENANCE_STARTED == 'true'
+        run: |
+          echo 'Deployment failed after maintenance began. Check the failed step and server logs before taking the site out of maintenance mode.' >> "$GITHUB_STEP_SUMMARY"

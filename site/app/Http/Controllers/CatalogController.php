@@ -24,6 +24,7 @@ class CatalogController
         app()->setLocale($locale);
 
         $page = LegalPage::query()->where('type', $type)->publiclyVisible()->firstOrFail();
+
         return view('catalog.legal', compact('page', 'locale'));
     }
 
@@ -44,6 +45,7 @@ class CatalogController
 
         $channels = ContactChannel::query()->where('published', true)->orderBy('sort_order')->get()
             ->filter(fn (ContactChannel $channel) => $channel->publicUrl() !== null);
+
         return view('catalog.contact', compact('channels', 'locale'));
     }
 
@@ -52,6 +54,7 @@ class CatalogController
         app()->setLocale($locale);
 
         $services = Service::query()->where('published', true)->orderByDesc('featured')->orderBy('sort_order')->get();
+
         return view('catalog.about', compact('services', 'locale'));
     }
 
@@ -63,6 +66,7 @@ class CatalogController
         $categories = ArticleCategory::query()->whereHas('articles', fn ($query) => $query->publiclyVisible())
             ->orderBy('sort_order')->orderBy('name_ar')->get();
         $selectedCategory = null;
+
         return view('catalog.articles', compact('articles', 'categories', 'selectedCategory', 'locale'));
     }
 
@@ -76,6 +80,7 @@ class CatalogController
             ->where('article_category_id', $selectedCategory->id)->orderByDesc('published_at')->paginate(9);
         $categories = ArticleCategory::query()->whereHas('articles', fn ($query) => $query->publiclyVisible())
             ->orderBy('sort_order')->orderBy('name_ar')->get();
+
         return view('catalog.articles', compact('articles', 'categories', 'selectedCategory', 'locale'));
     }
 
@@ -84,6 +89,7 @@ class CatalogController
         app()->setLocale($locale);
 
         $article = Article::query()->publiclyVisible()->with('category')->where('slug', $slug)->firstOrFail();
+
         return view('catalog.article', compact('article', 'locale'));
     }
 
@@ -102,6 +108,7 @@ class CatalogController
         app()->setLocale($locale);
 
         $faqs = Faq::query()->where('published', true)->orderBy('sort_order')->orderBy('id')->get();
+
         return view('catalog.faqs', compact('faqs', 'locale'));
     }
 
@@ -110,6 +117,7 @@ class CatalogController
         app()->setLocale($locale);
 
         $services = Service::query()->where('published', true)->orderByDesc('featured')->orderBy('sort_order')->get();
+
         return view('catalog.services', compact('services', 'locale'));
     }
 
@@ -120,6 +128,7 @@ class CatalogController
         $service = Service::query()->where('published', true)->where('slug', $slug)
             ->with(['packages' => fn ($query) => $query->where('published', true)->orderBy('sort_order')->orderBy('base_price_egp')->orderBy('id')])
             ->firstOrFail();
+
         return view('catalog.service', compact('service', 'locale'));
     }
 
@@ -145,6 +154,7 @@ class CatalogController
                 'packages.options' => fn ($query) => $query->where('published', true)->orderBy('sort_order'),
             ])
             ->orderBy('sort_order')->get();
+
         return view('catalog.pricing', ['services' => $services, 'locale' => $locale, 'preview' => false]);
     }
 
@@ -214,25 +224,23 @@ class CatalogController
         app()->setLocale($locale);
 
         $projects = Project::query()->publiclyVisible()->orderBy('sort_order')->latest()->get();
-        return view('catalog.work', ['projects' => $projects, 'locale' => $locale, 'concepts' => $this->concepts()]);
+
+        return view('catalog.work', [
+            'projects' => $projects->where('project_type', '!=', 'external'),
+            'externalExamples' => $projects->where('project_type', 'external'),
+            'locale' => $locale,
+            'concepts' => \App\Support\InteractiveConcepts::published(),
+        ]);
     }
 
     public function conceptDemo(string $locale, string $slug): View
     {
         app()->setLocale($locale);
 
-        $concept = $this->concepts()[$slug] ?? null;
+        $concept = \App\Support\InteractiveConcepts::published()[$slug] ?? null;
         abort_unless($concept, 404);
-        return view('catalog.concept-demo', ['concept' => $concept, 'slug' => $slug, 'locale' => $locale, 'noindex' => true]);
-    }
 
-    private function concepts(): array
-    {
-        return [
-            'flowboard' => ['title' => 'Flowboard', 'ar' => 'تصور لوحة لتنظيم عمل فريق المنتج.', 'en' => 'A visual product-team board concept.', 'type' => 'board'],
-            'storefront' => ['title' => 'Storefront', 'ar' => 'تصور واجهة متجر وتجربة اختيار منتج.', 'en' => 'A storefront interface and product-selection concept.', 'type' => 'store'],
-            'pulse' => ['title' => 'Pulse', 'ar' => 'تصور لوحة مبسطة لمؤشرات الأداء.', 'en' => 'A simple analytics dashboard concept.', 'type' => 'analytics'],
-        ];
+        return view('catalog.concept-demo', ['concept' => $concept, 'slug' => $slug, 'locale' => $locale, 'noindex' => true]);
     }
 
     public function project(string $locale, string $slug): View
@@ -240,6 +248,7 @@ class CatalogController
         app()->setLocale($locale);
 
         $project = Project::query()->publiclyVisible()->where('slug', $slug)->firstOrFail();
+
         return view('catalog.project', ['project' => $project, 'locale' => $locale, 'preview' => false]);
     }
 
@@ -260,6 +269,7 @@ class CatalogController
 
         $project = Project::query()->publiclyVisible()->where('slug', $slug)->firstOrFail();
         abort_if($project->tourImages() === [], 404);
+
         return view('catalog.project-tour', ['project' => $project, 'locale' => $locale, 'preview' => false, 'noindex' => true]);
     }
 

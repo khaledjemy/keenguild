@@ -421,9 +421,9 @@ class CatalogPagesTest extends TestCase
             ->assertSee('content="وصف الموقع"', false)->assertSee('name="robots" content="noindex,nofollow"', false);
         $this->get('/en')->assertOk()->assertSee('<title>Site title</title>', false)
             ->assertSee('content="Site description"', false);
-        $this->get('/en/pricing')->assertOk()->assertSee('content="Site description"', false)
+        $this->get('/en/pricing')->assertOk()->assertSee('Compare KeenGuild packages and pricing options', false)
             ->assertSee('name="robots" content="noindex,nofollow"', false);
-        $this->get('/robots.txt')->assertOk()->assertSee('Disallow: /');
+        $this->get('/robots.txt')->assertOk()->assertSee('Disallow: /admin/')->assertDontSee("Disallow: /\n");
 
         $seo->update(['allow_indexing' => true]);
         $this->get('/robots.txt')->assertOk()->assertSee('Sitemap:');

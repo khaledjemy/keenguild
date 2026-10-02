@@ -133,8 +133,10 @@ class PagesHub extends Page
 
         foreach (['flowboard' => 'Flowboard', 'storefront' => 'Storefront', 'pulse' => 'Pulse'] as $slug => $title) {
             $detailPages->push([
-                'kind' => 'تجربة ثابتة', 'title' => $title, 'status' => 'للعرض فقط؛ تعديلها يحتاج تطوير',
-                'edit' => null,
+                'kind' => 'نموذج تفاعلي', 'title' => $title, 'status' => 'الاسم والوصف والظهور من محتوى صفحة الأعمال؛ وظيفة التجربة ثابتة',
+                'edit' => ($workContent = $content->get('work'))
+                    ? PageContentResource::getUrl('edit', ['record' => $workContent])
+                    : PageContentResource::getUrl('create', ['page_key' => 'work']),
                 'previewAr' => route('concept.demo', ['locale' => 'ar', 'slug' => $slug]),
                 'previewEn' => route('concept.demo', ['locale' => 'en', 'slug' => $slug]),
             ]);

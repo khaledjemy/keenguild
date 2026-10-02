@@ -27,22 +27,41 @@
         $managedPageDescription = trim((string) ($pageSettings?->{'meta_description_'.$locale} ?? ''));
         $defaultDescription = $seo && filled($seo->{'default_description_'.$locale})
             ? $seo->{'default_description_'.$locale} : $defaultDescription;
+        $routeDescriptions = [
+            'work' => ['ar' => 'تصفح أعمال ومشاريع KeenGuild، مع توضيح المشاريع المنفذة والأمثلة الخارجية المتاحة للتجربة.', 'en' => 'Explore KeenGuild projects and work, with client work and third-party demos clearly identified.'],
+            'articles' => ['ar' => 'اقرأ مقالات KeenGuild عن تخطيط المواقع وتصميمها وتطوير المنتجات الرقمية.', 'en' => 'Read KeenGuild articles about website planning, design, and digital product development.'],
+            'services' => ['ar' => 'اكتشف خدمات KeenGuild في تصميم المواقع وتطويرها وبناء المنتجات الرقمية.', 'en' => 'Explore KeenGuild services for website design, development, and digital products.'],
+            'pricing' => ['ar' => 'تعرف على باقات KeenGuild وخيارات الأسعار لتصميم المواقع والمنتجات الرقمية.', 'en' => 'Compare KeenGuild packages and pricing options for websites and digital products.'],
+        ];
+        $pageDescription = trim($metaDescription ?? '') ?: ($managedPageDescription ?: ($routeDescriptions[$currentRoute][$locale] ?? $defaultDescription));
+        $pageTitle = ($managedPageTitle ?: trim($__env->yieldContent('title'))).' — KeenGuild';
+        $canonicalUrl = $currentRoute ? route($currentRoute, ['locale' => $locale, ...$routeParameters, ...$pagination]) : url()->current();
+        $socialImage = $seo?->social_image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($seo->social_image_path)
+            ? asset('storage/'.$seo->social_image_path) : null;
         $navigationItems = \Illuminate\Support\Facades\Schema::hasTable('navigation_items')
             ? \App\Models\NavigationItem::query()->where('published', true)->orderBy('sort_order')->orderBy('id')->get()->groupBy('location')
             : collect();
     @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{{ trim($metaDescription ?? '') ?: ($managedPageDescription ?: $defaultDescription) }}">
+    <meta name="description" content="{{ $pageDescription }}">
     @if($isPreview || ($noindex ?? false) || $seo?->allow_indexing === false || ($currentRoute === 'quote.create' && !($enabled ?? false)))
         <meta name="robots" content="noindex,nofollow">
     @elseif($currentRoute)
-        <link rel="canonical" href="{{ route($currentRoute, ['locale' => $locale, ...$routeParameters, ...$pagination]) }}">
+        <link rel="canonical" href="{{ $canonicalUrl }}">
         <link rel="alternate" hreflang="ar" href="{{ route($currentRoute, ['locale' => 'ar', ...$routeParameters, ...$pagination]) }}">
         <link rel="alternate" hreflang="en" href="{{ route($currentRoute, ['locale' => 'en', ...$routeParameters, ...$pagination]) }}">
     @endif
-    @if($seo?->social_image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($seo->social_image_path))<meta property="og:image" content="{{ asset('storage/' . $seo->social_image_path) }}">@endif
-    <title>{{ $managedPageTitle ?: trim($__env->yieldContent('title')) }} — KeenGuild</title>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KeenGuild">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $pageDescription }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta name="twitter:card" content="{{ $socialImage ? 'summary_large_image' : 'summary' }}">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $pageDescription }}">
+    @if($socialImage)<meta property="og:image" content="{{ $socialImage }}"><meta name="twitter:image" content="{{ $socialImage }}">@endif
+    <title>{{ $pageTitle }}</title>
     <link rel="icon" href="{{ $branding?->publicImageUrl('favicon_path', 'branding') ?? asset('assets/brand/favicon-new2.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

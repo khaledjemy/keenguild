@@ -56,7 +56,9 @@ class SitemapTest extends TestCase
     public function test_disabling_indexing_removes_urls_from_sitemap_and_reenabling_restores_them(): void
     {
         $seo = SeoSetting::create(['allow_indexing' => false]);
-        $this->get('/robots.txt')->assertOk()->assertSee('Disallow: /')->assertDontSee('Sitemap:');
+        $this->get('/robots.txt')->assertOk()->assertSee('Disallow: /admin/')
+            ->assertDontSee("Disallow: /\n")->assertDontSee('Sitemap:');
+        $this->get('/en/articles')->assertOk()->assertSee('name="robots" content="noindex,nofollow"', false);
         $response = $this->get('/sitemap.xml')->assertOk();
         $this->assertStringContainsString('no-store', $response->headers->get('Cache-Control'));
         $this->assertSame([], (array) simplexml_load_string($response->getContent()));

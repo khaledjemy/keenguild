@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Article;
 use App\Models\CustomPage;
-use App\Models\Project;
 use App\Models\Package;
+use App\Models\Project;
 use App\Models\Service;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -76,5 +76,50 @@ class PublicContentSearchTest extends TestCase
         $this->getJson('/api/agent/search?q='.urlencode('الأسعار'))->assertOk()
             ->assertJsonFragment(['title' => 'صفحة هبوط'])
             ->assertSee('5000 EGP');
+    }
+
+    public function test_search_finds_a_relevant_article_beyond_the_first_sixty_records(): void
+    {
+        for ($index = 0; $index < 65; $index++) {
+            Article::create([
+                'slug' => 'ordinary-'.$index, 'title_ar' => 'مقال عادي '.$index,
+                'title_en' => 'Ordinary article '.$index,
+                'summary_ar' => 'ملخص عام', 'summary_en' => 'General summary',
+                'body_ar' => 'تفاصيل عامة', 'body_en' => 'General details',
+                'published' => true, 'published_at' => now()->subDay(),
+            ]);
+        }
+        Article::create([
+            'slug' => 'quantum-design', 'title_ar' => 'تصميم كمي مميز',
+            'title_en' => 'Quantum design',
+            'summary_ar' => 'ملخص عام', 'summary_en' => 'General summary',
+            'body_ar' => 'تفاصيل عامة', 'body_en' => 'General details',
+            'published' => true, 'published_at' => now()->subDay(),
+        ]);
+
+        $this->getJson('/api/agent/search?q='.urlencode('article Quantum').'&locale=en')->assertOk()
+            ->assertJsonPath('items.0.title', 'Quantum design');
+    }
+
+    public function test_title_relevance_is_applied_before_the_result_limit(): void
+    {
+        Article::create([
+            'slug' => 'specific-launch', 'title_ar' => 'إطلاق خاص', 'title_en' => 'Specific launch',
+            'summary_ar' => 'ملخص', 'summary_en' => 'Summary',
+            'body_ar' => 'شرح', 'body_en' => 'Explanation',
+            'published' => true, 'published_at' => now()->subDay(),
+        ]);
+        for ($index = 0; $index < 65; $index++) {
+            Article::create([
+                'slug' => 'launch-notes-'.$index, 'title_ar' => 'ملاحظات '.$index,
+                'title_en' => 'Notes '.$index,
+                'summary_ar' => 'ملخص', 'summary_en' => 'Summary',
+                'body_ar' => 'شرح إطلاق', 'body_en' => 'Launch details',
+                'published' => true, 'published_at' => now()->subDay(),
+            ]);
+        }
+
+        $this->getJson('/api/agent/search?q='.urlencode('article launch').'&locale=en')->assertOk()
+            ->assertJsonPath('items.0.title', 'Specific launch');
     }
 }

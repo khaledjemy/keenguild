@@ -52,16 +52,36 @@ class PublicContentSearchController
 
         foreach ($sources as [$type, $query, $fields, $titleField, $summaryField, $bodyField, $route]) {
             $groupMatch = collect($groupWords[$type])->contains(fn (string $word): bool => mb_stripos($input['q'], $word) !== false);
-            if (! $groupMatch) {
-                $query->where(function (Builder $query) use ($fields, $terms): void {
-                    foreach ($terms as $term) {
+            $searchTerms = $groupMatch
+                ? array_values(array_filter($terms, fn (string $term): bool => ! collect($groupWords[$type])->contains(
+                    fn (string $word): bool => mb_stripos($term, $word) !== false,
+                )))
+                : $terms;
+
+            if ($searchTerms !== []) {
+                $query->where(function (Builder $query) use ($fields, $searchTerms): void {
+                    foreach ($searchTerms as $term) {
                         $pattern = '%'.addcslashes($term, '%_\\').'%';
                         foreach ($fields as $field) {
                             $query->orWhere($field, 'like', $pattern);
                         }
                     }
                 });
+
+                $scoreSql = [];
+                $bindings = [];
+                foreach ($searchTerms as $term) {
+                    $pattern = '%'.addcslashes($term, '%_\\').'%';
+                    $titleColumns = [$titleField.'_ar', $titleField.'_en'];
+                    $otherColumns = array_values(array_diff($fields, $titleColumns));
+                    $scoreSql[] = '(CASE WHEN '.implode(' OR ', array_map(fn (string $field): string => "$field LIKE ?", $titleColumns)).' THEN 5'
+                        .($otherColumns !== [] ? ' WHEN '.implode(' OR ', array_map(fn (string $field): string => "$field LIKE ?", $otherColumns)).' THEN 1' : '')
+                        .' ELSE 0 END)';
+                    array_push($bindings, ...array_fill(0, count($titleColumns) + count($otherColumns), $pattern));
+                }
+                $query->orderByRaw(implode(' + ', $scoreSql).' DESC', $bindings);
             }
+            $query->orderByDesc('id');
 
             foreach ($query->limit(60)->get() as $record) {
                 $title = (string) ($record->{$titleField.'_'.$locale} ?: $record->{$titleField.'_ar'});
@@ -74,7 +94,7 @@ class PublicContentSearchController
                 }
                 $haystack = mb_strtolower($title.' '.$copy);
                 $score = $groupMatch ? 2 : 0;
-                foreach ($terms as $term) {
+                foreach ($searchTerms as $term) {
                     $needle = mb_strtolower($term);
                     if (mb_stripos($title, $needle) !== false) {
                         $score += 5;
@@ -106,9 +126,9 @@ class PublicContentSearchController
                 'projects' => Project::query()->publiclyVisible()->count(),
             ],
             'items' => array_map(function (array $item): array {
-            unset($item['score']);
+                unset($item['score']);
 
-            return $item;
+                return $item;
             }, array_slice($items, 0, 6)),
         ])->header('Cache-Control', 'public, max-age=60');
     }

@@ -10,11 +10,19 @@ class Project extends Model
 {
     private const PUBLIC_COPY_FIELDS = ['title_ar', 'title_en', 'summary_ar', 'summary_en', 'body_ar', 'body_en'];
 
+    protected static function booted(): void
+    {
+        static::saving(function (Project $project): void {
+            $project->source_url_valid = $project->project_type === 'external'
+                && self::isPublicDemoUrl($project->source_url);
+        });
+    }
+
     protected $fillable = ['slug', 'title_ar', 'title_en', 'summary_ar', 'summary_en', 'scope_ar', 'scope_en', 'body_ar', 'body_en', 'cover_path', 'illustration_path', 'gallery_paths', 'technologies', 'demo_url', 'demo_status', 'source_name', 'source_url', 'project_type', 'display_permission_confirmed', 'featured', 'featured_in_demos', 'published', 'sort_order'];
 
     protected function casts(): array
     {
-        return ['gallery_paths' => 'array', 'technologies' => 'array', 'featured' => 'boolean', 'featured_in_demos' => 'boolean', 'published' => 'boolean', 'display_permission_confirmed' => 'boolean'];
+        return ['gallery_paths' => 'array', 'technologies' => 'array', 'featured' => 'boolean', 'featured_in_demos' => 'boolean', 'published' => 'boolean', 'display_permission_confirmed' => 'boolean', 'source_url_valid' => 'boolean'];
     }
 
     public function scopePubliclyVisible(Builder $query): Builder
@@ -28,7 +36,7 @@ class Project extends Model
             $query->where('project_type', 'concept')
                 ->orWhere(fn (Builder $query) => $query->where('project_type', 'external')
                     ->whereNotNull('source_name')->whereRaw("TRIM(source_name) <> ''")
-                    ->where('source_url', 'like', 'https://%'))
+                    ->where('source_url_valid', true))
                 ->orWhere(fn (Builder $query) => $query->where('project_type', 'client')->where('display_permission_confirmed', true));
         });
     }

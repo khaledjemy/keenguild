@@ -161,13 +161,15 @@ HTML;
                 $demos = view('home.demos', ['projects' => $demoProjects])->render();
                 $html = preg_replace('~<section id="demos"[^>]*>.*?</section>~s', $demos, $html, 1) ?? $html;
             }
-            $projects = Project::query()->publiclyVisible()->whereNotIn('id', $demoProjects->pluck('id'))
+            $projects = Project::query()->publiclyVisible()->where('project_type', '!=', 'external')
+                ->whereNotIn('id', $demoProjects->pluck('id'))
                 ->orderByDesc('featured')->orderBy('sort_order')->limit(2)->get();
             if ($projects->isNotEmpty()) {
                 $work = view('home.work', compact('projects'))->render();
                 $html = preg_replace('~<section id="work"[^>]*>.*?</section>~s', $work, $html, 1);
             } else {
-                $work = view('home.work-concepts', compact('locale'))->render();
+                $concepts = \App\Support\InteractiveConcepts::published();
+                $work = view('home.work-concepts', compact('locale', 'concepts'))->render();
                 $html = preg_replace('~<section id="work"[^>]*>.*?</section>~s', $work, $html, 1);
             }
         }
@@ -195,6 +197,9 @@ HTML;
         // Managed project demos have their own approved external URLs and are untouched.
         $html = preg_replace_callback('~<button\b[^>]*\bonclick="openDemo\(\'(Flowboard|Storefront|Pulse)\'\)"[^>]*>.*?</button>~s', function (array $match): string {
             $slug = strtolower($match[1]);
+            if (! array_key_exists($slug, \App\Support\InteractiveConcepts::published())) {
+                return '';
+            }
             $link = preg_replace('~\s+onclick="[^"]*"~', '', $match[0], 1) ?? $match[0];
             $link = preg_replace('~^<button\b~', '<a href="'.route('concept.demo', ['locale' => 'ar', 'slug' => $slug], false).'"', $link, 1) ?? $link;
 
@@ -262,6 +267,25 @@ HTML;
             $html = preg_replace('~<meta\s+name="robots"[^>]*>~i', '', $html) ?? $html;
             $html = str_replace('</head>', '<meta name="robots" content="noindex,nofollow"></head>', $html);
         }
+
+        preg_match('~<title>(.*?)</title>~si', $html, $socialTitle);
+        preg_match('~<meta\s+name="description"\s+content="([^"]*)"~i', $html, $socialDescription);
+        $title = html_entity_decode(strip_tags($socialTitle[1] ?? 'KeenGuild'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $description = html_entity_decode($socialDescription[1] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $homeUrl = $locale === 'en' ? route('home.en') : route('home');
+        $socialMeta = '<meta property="og:type" content="website">'
+            .'<meta property="og:site_name" content="KeenGuild">'
+            .'<meta property="og:title" content="'.e($title).'">'
+            .'<meta property="og:description" content="'.e($description).'">'
+            .'<meta property="og:url" content="'.e($homeUrl).'">'
+            .'<meta name="twitter:title" content="'.e($title).'">'
+            .'<meta name="twitter:description" content="'.e($description).'">';
+        $hasSocialImage = str_contains($html, 'property="og:image"');
+        $socialMeta .= '<meta name="twitter:card" content="'.($hasSocialImage ? 'summary_large_image' : 'summary').'">';
+        if ($hasSocialImage && preg_match('~<meta\s+property="og:image"\s+content="([^"]*)"~i', $html, $socialImage)) {
+            $socialMeta .= '<meta name="twitter:image" content="'.$socialImage[1].'">';
+        }
+        $html = str_replace('</head>', $socialMeta.'</head>', $html);
 
         $response = response($html, 200)->header('Content-Type', 'text/html; charset=UTF-8');
 

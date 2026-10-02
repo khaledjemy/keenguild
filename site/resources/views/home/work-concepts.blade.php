@@ -36,22 +36,19 @@
       <div>
         <span class="text-sm font-black text-lime-700" data-home-ar="03 / تصورات تفاعلية" data-home-en="03 / Interactive concepts">{{ $locale === 'ar' ? '03 / تصورات تفاعلية' : '03 / Interactive concepts' }}</span>
         <h2 class="text-4xl md:text-6xl font-black tracking-tight mt-3" data-home-ar="جرّب الفكرة بنفسك." data-home-en="Try the idea yourself.">{{ $locale === 'ar' ? 'جرّب الفكرة بنفسك.' : 'Try the idea yourself.' }}</h2>
-        <p class="mt-3 text-sm" data-home-ar="ثلاث تجارب تصميمية ببيانات افتراضية توضح طريقة التفكير والتفاعل؛ ليست مشاريع عملاء منفذة." data-home-en="Three interactive design studies with fictional data, not completed client projects.">{{ $locale === 'ar' ? 'ثلاث تجارب تصميمية ببيانات افتراضية توضح طريقة التفكير والتفاعل؛ ليست مشاريع عملاء منفذة.' : 'Three interactive design studies with fictional data, not completed client projects.' }}</p>
+        <p class="mt-3 text-sm" data-home-ar="تجارب تصميمية ببيانات افتراضية توضح طريقة التفكير والتفاعل؛ ليست مشاريع عملاء منفذة." data-home-en="Interactive design studies with fictional data, not completed client projects.">{{ $locale === 'ar' ? 'تجارب تصميمية ببيانات افتراضية توضح طريقة التفكير والتفاعل؛ ليست مشاريع عملاء منفذة.' : 'Interactive design studies with fictional data, not completed client projects.' }}</p>
       </div>
       <a class="work-concepts-all" href="{{ route('work', ['locale' => $locale]) }}" data-home-route="work" data-home-ar="كل الأعمال والنماذج ←" data-home-en="All work and examples →">{{ $locale === 'ar' ? 'كل الأعمال والنماذج ←' : 'All work and examples →' }}</a>
     </div>
     <div class="work-concepts-grid">
-      @foreach([
-        ['slug' => 'flowboard', 'name_ar' => 'Flowboard — لوحة فريق', 'name_en' => 'Flowboard — Team board', 'copy_ar' => 'نظّم مهام الفريق وجرّب تغيير حالة كل بطاقة.', 'copy_en' => 'Organize team tasks and try changing each card’s state.', 'art' => 'board'],
-        ['slug' => 'storefront', 'name_ar' => 'Storefront — متجر تجريبي', 'name_en' => 'Storefront — Demo store', 'copy_ar' => 'استكشف عرض المنتجات وأضف عنصرًا للسلة التجريبية.', 'copy_en' => 'Explore products and add an item to the demo bag.', 'art' => 'store'],
-        ['slug' => 'pulse', 'name_ar' => 'Pulse — لوحة مؤشرات', 'name_en' => 'Pulse — Analytics board', 'copy_ar' => 'بدّل الفترة وشاهد مؤشرات توضيحية تتغير أمامك.', 'copy_en' => 'Change the period and explore sample metrics.', 'art' => 'analytics'],
-      ] as $concept)
+      @if($concepts === [])<p data-home-ar="لا توجد نماذج تفاعلية منشورة حاليًا." data-home-en="No interactive concepts are published right now.">{{ $locale === 'ar' ? 'لا توجد نماذج تفاعلية منشورة حاليًا.' : 'No interactive concepts are published right now.' }}</p>@endif
+      @foreach($concepts as $slug => $concept)
         <article class="work-concept reveal">
-          <div class="work-concept-label"><span data-home-ar="نموذج تفاعلي" data-home-en="Interactive concept">{{ $locale === 'ar' ? 'نموذج تفاعلي' : 'Interactive concept' }}</span><span>{{ strtoupper($concept['slug']) }}</span></div>
-          <div class="work-concept-art {{ $concept['art'] }}" aria-hidden="true"><i></i><i></i><i></i>@if($concept['art'] === 'analytics')<i></i>@endif</div>
+          <div class="work-concept-label"><span data-home-ar="نموذج تفاعلي" data-home-en="Interactive concept">{{ $locale === 'ar' ? 'نموذج تفاعلي' : 'Interactive concept' }}</span><span>{{ strtoupper($slug) }}</span></div>
+          <div class="work-concept-art {{ $concept['type'] }}" aria-hidden="true"><i></i><i></i><i></i>@if($concept['type'] === 'analytics')<i></i>@endif</div>
           <h3 data-home-ar="{{ $concept['name_ar'] }}" data-home-en="{{ $concept['name_en'] }}">{{ $locale === 'ar' ? $concept['name_ar'] : $concept['name_en'] }}</h3>
           <p data-home-ar="{{ $concept['copy_ar'] }}" data-home-en="{{ $concept['copy_en'] }}">{{ $locale === 'ar' ? $concept['copy_ar'] : $concept['copy_en'] }}</p>
-          <a class="work-concept-link" href="{{ route('concept.demo', ['locale' => $locale, 'slug' => $concept['slug']]) }}"><span data-home-ar="افتح التجربة" data-home-en="Open the demo">{{ $locale === 'ar' ? 'افتح التجربة' : 'Open the demo' }}</span><span aria-hidden="true">↗</span></a>
+          <a class="work-concept-link" href="{{ route('concept.demo', ['locale' => $locale, 'slug' => $slug]) }}"><span data-home-ar="افتح التجربة" data-home-en="Open the demo">{{ $locale === 'ar' ? 'افتح التجربة' : 'Open the demo' }}</span><span aria-hidden="true">↗</span></a>
         </article>
       @endforeach
     </div>

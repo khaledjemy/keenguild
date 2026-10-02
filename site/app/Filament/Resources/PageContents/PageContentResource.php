@@ -52,6 +52,17 @@ class PageContentResource extends Resource
                 }
             }
         }
+        $conceptFields = [];
+        foreach (['flowboard' => 'Flowboard', 'storefront' => 'Storefront', 'pulse' => 'Pulse'] as $slug => $name) {
+            $conceptFields[] = Select::make('concept_'.$slug.'_visible')->label($name.' — الظهور')
+                ->options(['1' => 'ظاهر', '0' => 'مخفي'])->default('1');
+            foreach (['ar' => 'العربية', 'en' => 'English'] as $locale => $language) {
+                $conceptFields[] = TextInput::make('concept_'.$slug.'_name_'.$locale)
+                    ->label($name.' — الاسم '.$language)->maxLength(100);
+                $conceptFields[] = Textarea::make('concept_'.$slug.'_copy_'.$locale)
+                    ->label($name.' — الوصف '.$language)->maxLength(260);
+            }
+        }
 
         return $schema->components([
             Select::make('page_key')->label('الصفحة')->options(PageContent::PAGES)->required()
@@ -65,6 +76,10 @@ class PageContentResource extends Resource
             Section::make('خطوات من نحن وطريقة التسعير')
                 ->description('املأ حقول الصفحة التي تحررها فقط. الحقول الفارغة تُبقي النص الحالي.')
                 ->schema($processFields)->statePath('extra_copy')->columns(2)->collapsible()->collapsed(),
+            Section::make('النماذج التفاعلية في صفحة الأعمال والرئيسية')
+                ->description('تعديل الاسم والوصف والظهور. تصميم التجربة الداخلية ووظائفها ثابتان. الحقول الفارغة تستخدم النص الافتراضي.')
+                ->schema($conceptFields)->statePath('extra_copy')->columns(2)->collapsible()->collapsed()
+                ->visible(fn (\Filament\Schemas\Components\Utilities\Get $get): bool => $get('page_key') === 'work'),
         ]);
     }
 
