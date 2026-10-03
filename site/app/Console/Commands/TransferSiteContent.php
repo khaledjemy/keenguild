@@ -11,7 +11,7 @@ use Throwable;
 
 class TransferSiteContent extends Command
 {
-    protected $signature = 'keenguild:content-transfer {direction : export or import} {path : Private JSON file path} {--replace-migration-defaults : Only for a newly migrated database; replace generated navigation, homepage and pricing defaults}';
+    protected $signature = 'keenguild:content-transfer {direction : export or import} {path : Private JSON file path} {--replace-migration-defaults : Only for a newly migrated database; replace generated navigation, homepage, pricing and FAQ defaults}';
 
     protected $description = 'Transfer public site content between databases without users, sessions, cache or customer inquiries';
 
@@ -24,7 +24,7 @@ class TransferSiteContent extends Command
         'custom_pages', 'catalog_approvals',
     ];
 
-    private const MIGRATION_DEFAULT_TABLES = ['pricing_settings', 'homepage_contents', 'navigation_items'];
+    private const MIGRATION_DEFAULT_TABLES = ['pricing_settings', 'homepage_contents', 'navigation_items', 'faqs'];
 
     public function handle(): int
     {
