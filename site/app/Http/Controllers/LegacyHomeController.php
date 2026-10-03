@@ -154,7 +154,7 @@ HTML;
             }
         }
         if (Schema::hasTable('projects')) {
-            $demoProjects = Project::query()->publiclyVisible()->where('featured_in_demos', true)
+            $demoProjects = Project::query()->publiclyVisible()->where('project_type', '!=', 'client')->where('featured_in_demos', true)
                 ->where('demo_status', 'ready')->orderBy('sort_order')->orderBy('id')->get()
                 ->filter(fn (Project $project): bool => $project->hasLiveDemo())->take(3);
             if ($demoProjects->isNotEmpty()) {

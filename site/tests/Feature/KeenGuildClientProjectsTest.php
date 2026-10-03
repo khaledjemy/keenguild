@@ -20,13 +20,21 @@ class KeenGuildClientProjectsTest extends TestCase
         $this->assertSame(asset('assets/projects/italiano988.png'), $project->coverUrl());
         $this->assertFileExists(public_path('assets/projects/italiano988.png'));
 
-        $this->get('/')->assertOk()->assertSee('Italiano988')->assertSee('/ar/work/italiano988-import-export');
+        $this->get('/')->assertOk()->assertSee('Italiano988')->assertSee('/ar/work/italiano988-import-export')
+            ->assertSee('زيارة الموقع ↗')->assertSee('موقع منشور');
         $this->get('/en')->assertOk()->assertSee('Italiano988')->assertSee('data-home-route="project"', false);
-        $this->get('/ar/work')->assertOk()->assertSee('Italiano988')->assertSee('مشروع عميل');
+        $this->get('/ar/work')->assertOk()->assertSee('Italiano988')->assertSee('مشروع عميل')
+            ->assertSee('زيارة الموقع ↗')->assertDontSee('جرّب الديمو');
+        $this->get('/ar/work/italiano988-import-export')->assertOk()
+            ->assertSee('زيارة الموقع ↗')->assertDontSee('افتح الديمو');
         $this->get('/en/work/italiano988-import-export')->assertOk()
             ->assertSee('Client project')
+            ->assertSee('Visit live site')->assertDontSee('Open live demo')
             ->assertSee('https://italiano988.com/', false)
             ->assertSee('React');
+
+        $project->update(['featured_in_demos' => true]);
+        $this->get('/')->assertOk()->assertDontSee('data-home-demo-project="italiano988-import-export"', false);
 
         $project->update(['title_en' => 'Updated by admin']);
         $this->seed(KeenGuildClientProjectsSeeder::class);

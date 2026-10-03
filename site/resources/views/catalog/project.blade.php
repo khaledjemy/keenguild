@@ -14,7 +14,7 @@
     @if($project->hasLiveDemo() || $project->tourImages() !== [])
         <div class="hero-actions">
             @if($project->tourImages() !== [])<a class="button ghost" href="{{ route($preview ? 'preview.project.tour' : 'project.tour', ['locale' => $locale, 'slug' => $project->slug]) }}">{{ $locale === 'ar' ? 'جولة التصميم ←' : 'Design walkthrough →' }}</a>@endif
-            @if($project->hasLiveDemo())<a class="button primary" href="{{ $project->demo_url }}" target="_blank" rel="noopener noreferrer">{{ $locale === 'ar' ? 'افتح الديمو ↗' : 'Open live demo ↗' }}</a>@endif
+            @if($project->hasLiveDemo())<a class="button primary" href="{{ $project->demo_url }}" target="_blank" rel="noopener noreferrer">{{ $project->project_type === 'client' ? ($locale === 'ar' ? 'زيارة الموقع ↗' : 'Visit live site ↗') : ($locale === 'ar' ? 'افتح الديمو ↗' : 'Open live demo ↗') }}</a>@endif
         </div>
     @endif
 </div></section>

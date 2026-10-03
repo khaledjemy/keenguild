@@ -72,7 +72,7 @@ class ProjectsTable
                     ->url(fn (Project $record): string => route('preview.project.tour', ['locale' => 'en', 'slug' => $record->slug]))
                     ->visible(fn (Project $record): bool => $record->tourImages() !== [])
                     ->openUrlInNewTab(),
-                Action::make('live_demo')->label('فتح الديمو')
+                Action::make('live_demo')->label(fn (Project $record): string => $record->project_type === 'client' ? 'زيارة موقع العميل' : 'فتح الديمو')
                     ->url(fn (Project $record): string => (string) $record->demo_url)
                     ->visible(fn (Project $record): bool => $record->hasLiveDemo())
                     ->openUrlInNewTab(),

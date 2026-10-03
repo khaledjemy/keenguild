@@ -71,17 +71,17 @@ class ProjectForm
                 Toggle::make('display_permission_confirmed')->label('تأكيد وجود إذن من العميل لعرض هذا المشروع')
                     ->helperText('لا يظهر مشروع العميل للزوار حتى لو كان منشورًا ما لم تؤكد الإذن هنا. احتفظ بإثبات الموافقة خارج الموقع.')
                     ->default(false)->visible(fn (Get $get): bool => $get('project_type') === 'client'),
-                TextInput::make('demo_url')->label('رابط الديمو')
+                TextInput::make('demo_url')->label(fn (Get $get): string => $get('project_type') === 'client' ? 'رابط موقع العميل المنشور' : 'رابط الديمو')
                     ->url()->rule('starts_with:https://')->maxLength(2048)
                     ->rule(fn (Get $get) => function (string $attribute, mixed $value, \Closure $fail) use ($get): void {
                         if ($get('demo_status') === 'ready' && ! Project::isPublicDemoUrl(is_string($value) ? $value : null)) {
                             $fail('استخدم رابط HTTPS عامًا حقيقيًا، بدون بيانات دخول في الرابط أو عنوان محلي أو تجريبي مثل .test.');
                         }
                     })
-                    ->helperText('المعاينة الداخلية بالعربية والإنجليزية تعمل من قائمة المشاريع حتى قبل النشر، وتعرض النص والصور. الديمو التفاعلي يحتاج رابط HTTPS منشورًا مستقلًا؛ لا تضع بيانات الدخول داخل الرابط.')
+                    ->helperText('أدخل رابط HTTPS عامًا للموقع المنشور أو الديمو، بدون بيانات دخول. المعاينة الداخلية متاحة من قائمة المشاريع حتى قبل النشر.')
                     ->required(fn (Get $get): bool => $get('demo_status') === 'ready'),
-                Select::make('demo_status')->label('حالة الديمو')->options([
-                    'unavailable' => 'لا يوجد ديمو', 'ready' => 'ديمو جاهز',
+                Select::make('demo_status')->label(fn (Get $get): string => $get('project_type') === 'client' ? 'حالة رابط الموقع' : 'حالة الديمو')->options([
+                    'unavailable' => 'لا يوجد رابط منشور', 'ready' => 'الرابط جاهز',
                 ])
                     ->required()
                     ->live()
@@ -90,7 +90,7 @@ class ProjectForm
                     ->required(),
                 Toggle::make('featured_in_demos')->label('عرض في قسم جرّب بنفسك بالرئيسية')
                     ->helperText('يظهر فقط إذا نُشر المشروع واكتمل وصفه وكان له رابط ديمو HTTPS جاهز. تظهر حتى ثلاث بطاقات حسب الترتيب.')
-                    ->default(false),
+                    ->default(false)->visible(fn (Get $get): bool => $get('project_type') !== 'client'),
                 Toggle::make('published')->label('طلب نشر المشروع للزوار')->helperText('مشروعات العملاء تحتاج تأكيد إذن العرض؛ الأمثلة الخارجية تحتاج اسم ورابط المصدر.')->default(false),
                 TextInput::make('sort_order')
                     ->required()

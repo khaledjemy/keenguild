@@ -16,7 +16,7 @@
         <div class="grid md:grid-cols-12 gap-5">
             @foreach($projects as $project)
                 <article class="{{ $projects->count() === 1 ? 'md:col-span-12 bg-[#d5ddff]' : ($loop->first ? 'md:col-span-7 bg-[#d5ddff]' : 'md:col-span-5 bg-lime') }} reveal rounded-3xl p-5 min-h-[420px] overflow-hidden flex flex-col">
-                    <div class="flex justify-between gap-3 text-sm font-bold"><span data-home-ar="{{ $project->project_type === 'client' ? 'مشروع عميل' : ($project->project_type === 'external' ? 'مثال خارجي — ليس من أعمالنا' : 'نموذج تصميمي') }}" data-home-en="{{ $project->project_type === 'client' ? 'Client project' : ($project->project_type === 'external' ? 'Third-party example — not our work' : 'Design concept') }}">{{ $project->project_type === 'client' ? 'مشروع عميل' : ($project->project_type === 'external' ? 'مثال خارجي — ليس من أعمالنا' : 'نموذج تصميمي') }}</span>@if($project->hasLiveDemo())<span data-home-ar="ديمو متاح" data-home-en="Demo available">ديمو متاح</span>@endif</div>
+                    <div class="flex justify-between gap-3 text-sm font-bold"><span data-home-ar="{{ $project->project_type === 'client' ? 'مشروع عميل' : ($project->project_type === 'external' ? 'مثال خارجي — ليس من أعمالنا' : 'نموذج تصميمي') }}" data-home-en="{{ $project->project_type === 'client' ? 'Client project' : ($project->project_type === 'external' ? 'Third-party example — not our work' : 'Design concept') }}">{{ $project->project_type === 'client' ? 'مشروع عميل' : ($project->project_type === 'external' ? 'مثال خارجي — ليس من أعمالنا' : 'نموذج تصميمي') }}</span>@if($project->hasLiveDemo())<span data-home-ar="{{ $project->project_type === 'client' ? 'موقع منشور' : 'ديمو متاح' }}" data-home-en="{{ $project->project_type === 'client' ? 'Live website' : 'Demo available' }}">{{ $project->project_type === 'client' ? 'موقع منشور' : 'ديمو متاح' }}</span>@endif</div>
                     <div class="home-cover bg-white rounded-2xl shadow-xl">
                         @if($project->coverUrl())
                             <img src="{{ $project->coverUrl() }}" alt="" loading="lazy" style="width:100%;object-fit:cover;border-radius:13px">
@@ -28,7 +28,7 @@
                     <p class="text-black/65 leading-7 mt-2" data-home-ar="{{ $project->summary_ar }}" data-home-en="{{ $project->summary_en }}">{{ $project->summary_ar }}</p>
                     <div class="home-actions flex flex-wrap gap-4 font-bold">
                         <a href="{{ route('project', ['locale' => 'ar', 'slug' => $project->slug]) }}" data-home-route="project" data-home-ar="تفاصيل المشروع ←" data-home-en="View project →">تفاصيل المشروع ←</a>
-                        @if($project->hasLiveDemo())<a href="{{ $project->demo_url }}" target="_blank" rel="noopener noreferrer" data-home-ar="افتح الديمو ↗" data-home-en="Open demo ↗">افتح الديمو ↗</a>@endif
+                        @if($project->hasLiveDemo())<a href="{{ $project->demo_url }}" target="_blank" rel="noopener noreferrer" data-home-ar="{{ $project->project_type === 'client' ? 'زيارة الموقع ↗' : 'افتح الديمو ↗' }}" data-home-en="{{ $project->project_type === 'client' ? 'Visit live site ↗' : 'Open demo ↗' }}">{{ $project->project_type === 'client' ? 'زيارة الموقع ↗' : 'افتح الديمو ↗' }}</a>@endif
                     </div>
                 </article>
             @endforeach
