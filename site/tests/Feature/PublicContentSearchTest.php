@@ -39,12 +39,12 @@ class PublicContentSearchTest extends TestCase
         ]);
 
         $response = $this->getJson('/api/agent/search?q='.urlencode('مواقع').'&locale=ar')->assertOk();
-        $response->assertJsonCount(2, 'items')
-            ->assertJsonPath('counts.articles', 1)
+        $response->assertJsonPath('counts.articles', 1)
             ->assertJsonPath('counts.projects', 0)
             ->assertJsonPath('items.0.title', 'مواقع سريعة')
-            ->assertJsonPath('items.0.url', route('article', ['locale' => 'ar', 'slug' => 'fast-websites']))
-            ->assertJsonPath('items.1.type', 'faq');
+            ->assertJsonPath('items.0.url', route('article', ['locale' => 'ar', 'slug' => 'fast-websites']));
+        $this->assertContains('faq', array_column($response->json('items'), 'type'));
+        $this->assertNotContains('مواقع مستقبلية', array_column($response->json('items'), 'title'));
     }
 
     public function test_search_rejects_oversized_query(): void

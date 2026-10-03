@@ -16,12 +16,26 @@ class CommonFaqsTest extends TestCase
 
         $this->get('/ar/faq')->assertOk()
             ->assertSee('كيف أبدأ مشروعًا معكم؟')
+            ->assertSee('KeenGuild تعمل في البرمجة والحلول الرقمية عمومًا')
             ->assertSee('هل تضمنون ظهور الموقع في نتائج البحث؟')
             ->assertDontSee('How do I start a project with you?');
         $this->get('/en/faq')->assertOk()
             ->assertSee('How do I start a project with you?')
+            ->assertSee('KeenGuild works on software and digital solutions broadly')
             ->assertSee('No specific search ranking can be guaranteed.')
             ->assertDontSee('كيف أبدأ مشروعًا معكم؟');
+    }
+
+    public function test_copy_update_does_not_overwrite_owner_customization(): void
+    {
+        $faq = Faq::query()->where('question_en', 'How is a project priced?')->firstOrFail();
+        $faq->update(['answer_en' => 'Custom approved pricing answer']);
+
+        $migration = require database_path('migrations/2026_10_03_000002_clarify_general_programming_faqs.php');
+        $migration->up();
+
+        $this->assertSame('Custom approved pricing answer', $faq->fresh()->answer_en);
+        $this->assertStringContainsString('البرمجة والحلول الرقمية', Faq::query()->where('question_en', 'What services does KeenGuild offer?')->firstOrFail()->answer_ar);
     }
 
     public function test_rerunning_content_migration_preserves_admin_edits_and_other_questions(): void
