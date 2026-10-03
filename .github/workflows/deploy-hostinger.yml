@@ -133,7 +133,7 @@ jobs:
         run: |
           set -euo pipefail
           ssh -p "$SSH_PORT" -i "$HOME/.ssh/hostinger_deploy" -o StrictHostKeyChecking=yes "$SSH_USER@$SSH_HOST" \
-            "cd '$DEPLOY_ROOT/site' && composer2 install --no-dev --prefer-dist --no-interaction --optimize-autoloader && php artisan migrate --force && rsync -a --exclude=/storage --exclude=/index.php public/ ../public_html/ && php artisan optimize:clear && php artisan optimize && php artisan keenguild:launch-check && php artisan up"
+            "cd '$DEPLOY_ROOT/site' && composer2 install --no-dev --prefer-dist --no-interaction --optimize-autoloader && php artisan migrate --force && php artisan db:seed --class=KeenGuildClientProjectsSeeder --force && rsync -a --exclude=/storage --exclude=/index.php public/ ../public_html/ && php artisan optimize:clear && php artisan optimize && php artisan keenguild:launch-check && php artisan up"
 
       - name: Check public homepage
         shell: bash

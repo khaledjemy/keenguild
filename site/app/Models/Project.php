@@ -70,7 +70,7 @@ class Project extends Model
         }
 
         if (is_string($this->illustration_path)
-            && preg_match('~^assets/demos/[a-z0-9-]+\.(?:png|jpe?g|webp|avif)$~i', $this->illustration_path)) {
+            && preg_match('~^assets/(?:demos|projects)/[a-z0-9-]+\.(?:png|jpe?g|webp|avif)$~i', $this->illustration_path)) {
             return asset($this->illustration_path);
         }
 
