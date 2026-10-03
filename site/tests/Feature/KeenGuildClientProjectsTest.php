@@ -41,4 +41,24 @@ class KeenGuildClientProjectsTest extends TestCase
         $this->assertSame(1, Project::query()->where('slug', 'italiano988-import-export')->count());
         $this->assertSame('Updated by admin', $project->fresh()->title_en);
     }
+
+    public function test_kamal_orabi_is_listed_as_a_live_client_website(): void
+    {
+        $this->seed(KeenGuildClientProjectsSeeder::class);
+
+        $project = Project::query()->where('slug', 'kamal-orabi-portfolio')->firstOrFail();
+        $this->assertTrue($project->isPubliclyVisible());
+        $this->assertFalse($project->featured_in_demos);
+        $this->assertSame(asset('assets/projects/kamalorabi.jpg'), $project->coverUrl());
+        $this->assertFileExists(public_path('assets/projects/kamalorabi.jpg'));
+
+        $this->get('/ar/work')->assertOk()->assertSee('كمال عرابي')->assertSee('زيارة الموقع ↗');
+        $this->get('/en/work/kamal-orabi-portfolio')->assertOk()
+            ->assertSee('Client project')->assertSee('Visit live site')
+            ->assertSee('https://kamalorabi.com/', false);
+
+        $project->update(['summary_en' => 'Edited in admin']);
+        $this->seed(KeenGuildClientProjectsSeeder::class);
+        $this->assertSame('Edited in admin', $project->fresh()->summary_en);
+    }
 }
